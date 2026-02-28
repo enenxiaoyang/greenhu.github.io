@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>碳足迹统计 | GreenHub</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    
+    /* 页面标题区域 */
+    .page-header {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1068/1920/400');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 0 40px;
+      text-align: center;
+      color: white;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .page-header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    /* 内容区域 */
+    .content-section {
+      padding: 40px 0;
+    }
+    
+    /* 统计卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2c7a7b;
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .stat-change {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .stat-change.positive {
+      background: #e6f7e6;
+      color: #52c41a;
+    }
+    .stat-change.negative {
+      background: #fff2f0;
+      color: #ff4d4f;
+    }
+    
+    /* 图表容器 */
+    .chart-container {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .chart-title {
+      font-size: 1.3rem;
+      color: #333;
+    }
+    .chart-filters {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chart-filter-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .chart-filter-btn:hover,
+    .chart-filter-btn.active {
+      background: #2c7a7b;
+      color: white;
+      border-color: #2c7a7b;
+    }
+    .chart-wrapper {
+      position: relative;
+      height: 400px;
+    }
+    
+    /* 数据表格 */
+    .data-table-container {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .data-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+    .data-table tr:hover {
+      background: #f8f9fa;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .badge-high {
+      background: #fff2f0;
+      color: #ff4d4f;
+    }
+    .badge-medium {
+      background: #fffbe6;
+      color: #faad14;
+    }
+    .badge-low {
+      background: #f6ffed;
+      color: #52c41a;
+    }
+    
+    /* 操作按钮 */
+    .action-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-secondary {
+      background: white;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-secondary:hover {
+      background: #f5f5f5;
+    }
+    
+    /* 页脚 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      .chart-wrapper {
+        height: 300px;
+      }
+      .data-table {
+        font-size: 0.9rem;
+      }
+      .data-table th,
+      .data-table td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a class="active" href="co2-stats.html">碳足迹统计</a>
+      <a href="login.html">登录</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 页面标题 -->
+<section class="page-header">
+  <div class="container">
+    <h1>碳足迹统计</h1>
+    <p>追踪您的碳排放数据，见证绿色生活的改变</p>
+  </div>
+</section>
+
+<!-- 内容区域 -->
+<section class="content-section">
+  <div class="container">
+    <!-- 操作按钮 -->
+    <div class="action-bar">
+      <a href="co2.html" class="btn btn-secondary">← 返回计算</a>
+      <button class="btn btn-primary" onclick="exportData()">导出数据</button>
+      <button class="btn btn-secondary" onclick="refreshData()">刷新数据</button>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-value" id="totalEmission">2,456</div>
+        <div class="stat-label">总碳排放 (kg CO₂)</div>
+        <div class="stat-change positive">↓ 12% 较上月</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value" id="avgMonthly">205</div>
+        <div class="stat-label">月均排放 (kg CO₂)</div>
+        <div class="stat-change positive">↓ 8% 较上季度</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-value" id="reductionTarget">30%</div>
+        <div class="stat-label">减排目标完成度</div>
+        <div class="stat-change positive">↑ 5% 较上周</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-value" id="savedTrees">15</div>
+        <div class="stat-label">相当于种植树木 (棵)</div>
+        <div class="stat-change positive">↑ 3棵 本月新增</div>
+      </div>
+    </div>
+
+    <!-- 折线图 -->
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3 class="chart-title">📈 碳排放趋势图</h3>
+        <div class="chart-filters">
+          <button class="chart-filter-btn active" data-period="week">本周</button>
+          <button class="chart-filter-btn" data-period="month">本月</button>
+          <button class="chart-filter-btn" data-period="quarter">本季度</button>
+          <button class="chart-filter-btn" data-period="year">全年</button>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="emissionChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 分类对比图 -->
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3 class="chart-title">📊 碳排放分类对比</h3>
+      </div>
+      <div class="chart-wrapper" style="height: 350px;">
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 历史数据表格 -->
+    <div class="data-table-container">
+      <div class="chart-header">
+        <h3 class="chart-title">📋 历史记录明细</h3>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>用电量 (kWh)</th>
+            <th>通勤里程 (km)</th>
+            <th>外卖次数</th>
+            <th>碳排放 (kg CO₂)</th>
+            <th>等级</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr>
+            <td>2026-02-26</td>
+            <td>120</td>
+            <td>80</td>
+            <td>5</td>
+            <td>85.2</td>
+            <td><span class="badge badge-medium">中等</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-25</td>
+            <td>110</td>
+            <td>60</td>
+            <td>3</td>
+            <td>72.5</td>
+            <td><span class="badge badge-low">低</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-24</td>
+            <td>135</td>
+            <td>100</td>
+            <td>8</td>
+            <td>98.3</td>
+            <td><span class="badge badge-high">高</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-23</td>
+            <td>105</td>
+            <td>50</td>
+            <td>2</td>
+            <td>65.8</td>
+            <td><span class="badge badge-low">低</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-22</td>
+            <td>125</td>
+            <td>90</td>
+            <td>6</td>
+            <td>88.7</td>
+            <td><span class="badge badge-medium">中等</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-21</td>
+            <td>95</td>
+            <td>40</td>
+            <td>1</td>
+            <td>58.2</td>
+            <td><span class="badge badge-low">低</span></td>
+          </tr>
+          <tr>
+            <td>2026-02-20</td>
+            <td>140</td>
+            <td>110</td>
+            <td>10</td>
+            <td>105.6</td>
+            <td><span class="badge badge-high">高</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>&copy; 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 从 localStorage 读取数据
+  function loadDataFromStorage() {
+    const history = JSON.parse(localStorage.getItem('gh:co2History') || '[]');
+    const stats = JSON.parse(localStorage.getItem('gh:co2Stats') || '{}');
+    return { history, stats };
+  }
+
+  // 更新统计卡片
+  function updateStatCards(stats, history) {
+    if (stats.totalEmission) {
+      document.getElementById('totalEmission').textContent = parseInt(stats.totalEmission).toLocaleString();
+    }
+    if (stats.avgMonthly) {
+      document.getElementById('avgMonthly').textContent = parseInt(stats.avgMonthly).toLocaleString();
+    }
+    if (history.length > 0) {
+      // 计算减排目标完成度（假设目标是每月减少10%）
+      const completion = Math.min(30 + history.length * 2, 100);
+      document.getElementById('reductionTarget').textContent = completion + '%';
+      // 计算相当于种植的树木（每100kg CO2 = 1棵树）
+      const trees = Math.floor(parseInt(stats.totalEmission || 0) / 100);
+      document.getElementById('savedTrees').textContent = trees;
+    }
+  }
+
+  // 更新历史表格
+  function updateHistoryTable(history) {
+    const tbody = document.getElementById('historyTableBody');
+    if (history.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">暂无数据，请在CO2页面计算并保存记录</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = history.slice(0, 10).map(record => {
+      const total = parseFloat(record.total);
+      let badgeClass = 'badge-low';
+      let badgeText = '低';
+      if (total > 100) {
+        badgeClass = 'badge-high';
+        badgeText = '高';
+      } else if (total > 70) {
+        badgeClass = 'badge-medium';
+        badgeText = '中等';
+      }
+      return `
+        <tr>
+          <td>${record.date}</td>
+          <td>${record.kwh}</td>
+          <td>${record.commuteKm}</td>
+          <td>${record.deliveries}</td>
+          <td>${record.total}</td>
+          <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // 生成图表数据
+  function generateChartData(history) {
+    if (history.length === 0) {
+      return {
+        week: { labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'], data: [0, 0, 0, 0, 0, 0, 0] },
+        month: { labels: ['第1周', '第2周', '第3周', '第4周'], data: [0, 0, 0, 0] },
+        quarter: { labels: ['1月', '2月', '3月'], data: [0, 0, 0] },
+        year: { labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'], data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+      };
+    }
+
+    // 使用实际数据生成图表
+    const weekData = history.slice(0, 7).reverse().map(r => parseFloat(r.total));
+    while (weekData.length < 7) weekData.push(0);
+
+    return {
+      week: {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        data: weekData
+      },
+      month: {
+        labels: ['第1周', '第2周', '第3周', '第4周'],
+        data: [520, 485, 512, 468]
+      },
+      quarter: {
+        labels: ['1月', '2月', '3月'],
+        data: [1850, 1985, 1756]
+      },
+      year: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        data: [1850, 1985, 1756, 1620, 1580, 1450, 1380, 1420, 1350, 1280, 1220, 1150]
+      }
+    };
+  }
+
+  // 图表数据
+  let chartData = generateChartData([]);
+
+  let currentChart = null;
+
+  // 初始化折线图
+  function initLineChart(period = 'week') {
+    const ctx = document.getElementById('emissionChart').getContext('2d');
+    const data = chartData[period];
+
+    if (currentChart) {
+      currentChart.destroy();
+    }
+
+    currentChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: '碳排放量 (kg CO₂)',
+          data: data.data,
+          borderColor: '#2c7a7b',
+          backgroundColor: 'rgba(44, 122, 123, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#2c7a7b',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                return `碳排放: ${context.parsed.y} kg CO₂`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: '碳排放量 (kg CO₂)'
+            },
+            grid: {
+              color: 'rgba(0,0,0,0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index'
+        }
+      }
+    });
+  }
+
+  // 初始化分类对比图
+  function initCategoryChart() {
+    const ctx = document.getElementById('categoryChart').getContext('2d');
+    
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['用电', '通勤', '外卖/快递', '其他消费'],
+        datasets: [{
+          label: '本月碳排放 (kg CO₂)',
+          data: [450, 380, 220, 150],
+          backgroundColor: [
+            'rgba(44, 122, 123, 0.8)',
+            'rgba(82, 196, 26, 0.8)',
+            'rgba(250, 173, 20, 0.8)',
+            'rgba(255, 77, 79, 0.8)'
+          ],
+          borderColor: [
+            '#2c7a7b',
+            '#52c41a',
+            '#faad14',
+            '#ff4d4f'
+          ],
+          borderWidth: 2,
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            padding: 12,
+            cornerRadius: 8
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: '碳排放量 (kg CO₂)'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 时间筛选按钮事件
+  document.querySelectorAll('.chart-filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.chart-filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      const period = this.getAttribute('data-period');
+      initLineChart(period);
+    });
+  });
+
+  // 导出数据
+  function exportData() {
+    alert('数据导出功能（演示）：\n\n数据已导出为 CSV 格式！');
+  }
+
+  // 刷新数据
+  function refreshData() {
+    // 模拟数据刷新
+    const statValues = document.querySelectorAll('.stat-value');
+    statValues.forEach(stat => {
+      stat.style.opacity = '0.5';
+    });
+    
+    setTimeout(() => {
+      statValues.forEach(stat => {
+        stat.style.opacity = '1';
+      });
+      alert('数据已刷新！');
+    }, 500);
+  }
+
+  // 页面加载时初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    // 加载数据
+    const { history, stats } = loadDataFromStorage();
+    
+    // 更新统计卡片
+    updateStatCards(stats, history);
+    
+    // 更新历史表格
+    updateHistoryTable(history);
+    
+    // 生成图表数据
+    chartData = generateChartData(history);
+    
+    // 初始化图表
+    initLineChart('week');
+    initCategoryChart();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>废品买卖 | GreenHub</title>
+  <script src="https://api.map.baidu.com/api?v=2.0&ak=E4805d16520de693a3fe707cdc962045"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-ghost:hover {
+      background: #f5f5f5;
+    }
+    .btn-orange {
+      background: #ff9500;
+      color: white;
+      border: none;
+    }
+    .btn-orange:hover {
+      background: #e68600;
+    }
+    .btn-green {
+      background: #52c41a;
+      color: white;
+      border: none;
+    }
+    .btn-green:hover {
+      background: #45a814;
+    }
+    
+    /* 英雄区域样式 */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/id/110/1920/600');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* 分类筛选栏 */
+    .filter-bar {
+      background: white;
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #eee;
+    }
+    .filter-content {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .filter-item span {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .filter-item select,
+    .filter-item input {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    /* 回收物品网格布局 */
+    .recycle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    /* 回收物品卡片 */
+    .recycle-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .recycle-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .recycle-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .recycle-content {
+      padding: 1rem;
+    }
+    .recycle-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .recycle-type {
+      font-size: 0.85rem;
+      color: #ff9500;
+      font-weight: 500;
+    }
+    .recycle-quantity {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .recycle-title {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .recycle-tag {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .tag-sell {
+      background: #e6f7ff;
+      color: #1890ff;
+      border: 1px solid #91d5ff;
+    }
+    .tag-buy {
+      background: #fff7e6;
+      color: #fa8c16;
+      border: 1px solid #ffd591;
+    }
+    .recycle-seller {
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 0.75rem;
+    }
+    .recycle-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .recycle-actions .btn {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    /* 发布按钮悬浮 */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #2c7a7b;
+      color: white;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      z-index: 99;
+    }
+    .fab:hover {
+      background: #246a6b;
+      transform: scale(1.1);
+    }
+    
+    /* 发布弹窗 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h3 {
+      color: #2c7a7b;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    /* 页脚样式 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .recycle-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      .filter-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 480px) {
+      .recycle-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* 地图相关样式 */
+    .map-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    .map-title {
+      font-weight: 600;
+      color: #2c7a7b;
+    }
+    .map-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .toggle-btn {
+      padding: 0.25rem 0.75rem;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .toggle-btn.active {
+      background: #2c7a7b;
+      color: white;
+      border-color: #2c7a7b;
+    }
+    #map {
+      width: 100%;
+      height: 500px;
+    }
+    .map-controls {
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .distance-filter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .distance-filter select {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .location-btn {
+      background: #2c7a7b;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .location-btn:hover {
+      background: #246a6b;
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a class="active" href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="sell.html">我要出售</a>
+      <a class="btn btn-primary" href="login.html">加入我们</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="container">
+      <h1>废品回收 / 二手买卖</h1>
+      <p>让闲置物品重获新生，为环保贡献一份力量</p>
+    </div>
+  </section>
+
+  <!-- 筛选栏 -->
+  <div class="filter-bar">
+    <div class="container">
+      <div class="filter-content">
+        <div class="filter-item">
+          <span>类型</span>
+          <select id="filterType">
+            <option value="all">全部</option>
+            <option value="sell">出售</option>
+            <option value="buy">求购</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span>分类</span>
+          <select id="filterCategory">
+            <option value="all">全部分类</option>
+            <option value="phone">手机数码</option>
+            <option value="computer">电脑办公</option>
+            <option value="appliance">家用电器</option>
+            <option value="metal">金属废品</option>
+            <option value="plastic">塑料回收</option>
+            <option value="paper">纸类回收</option>
+            <option value="textile">旧衣物</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span>地区</span>
+          <select id="filterLocation">
+            <option value="all">全部地区</option>
+            <option value="beijing">北京</option>
+            <option value="shanghai">上海</option>
+            <option value="guangzhou">广州</option>
+            <option value="shenzhen">深圳</option>
+            <option value="other">其他地区</option>
+          </select>
+        </div>
+        <div class="filter-item" style="flex: 1;">
+          <span>搜索</span>
+          <input type="text" id="searchInput" placeholder="搜索物品名称...">
+        </div>
+      </div>
+  </div>
+</div>
+
+  <!-- 地图视图 -->
+  <div class="container">
+    <div class="map-container">
+      <div class="map-header">
+        <h3 class="map-title">📍 卖家位置地图</h3>
+        <div class="map-toggle">
+          <button class="toggle-btn active" data-view="map">地图视图</button>
+          <button class="toggle-btn" data-view="list">列表视图</button>
+        </div>
+      </div>
+      <div id="map"></div>
+      <div class="map-controls">
+        <div class="distance-filter">
+          <span>距离筛选：</span>
+          <select id="distanceFilter">
+            <option value="5">5公里内</option>
+            <option value="10" selected>10公里内</option>
+            <option value="20">20公里内</option>
+            <option value="50">50公里内</option>
+            <option value="100">100公里内</option>
+          </select>
+        </div>
+        <button class="location-btn" id="locateMe">
+          <span>📍</span> 定位我
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 回收物品网格 -->
+  <div class="container">
+    <div class="recycle-grid" id="recycleGrid">
+      <!-- 物品卡片 1 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/160/300/200" alt="废旧手机" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">5000台</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">大量出售废旧手机</h4>
+          <p class="recycle-seller">鼎恒废品收购站</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 2 -->
+      <div class="recycle-card" data-type="buy" data-category="phone">
+        <img src="https://picsum.photos/id/161/300/200" alt="二手安卓手机" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">10盒</span>
+          </div>
+          <span class="recycle-tag tag-buy">求</span>
+          <h4 class="recycle-title">二手安卓手机</h4>
+          <p class="recycle-seller">南宁（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 3 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/162/300/200" alt="废旧手机" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">10千克</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">废旧手机</h4>
+          <p class="recycle-seller">南宁再生资源回收有限公司</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 4 -->
+      <div class="recycle-card" data-type="sell" data-category="computer">
+        <img src="https://picsum.photos/id/163/300/200" alt="二手平板" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">10台</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">二手平板电脑</h4>
+          <p class="recycle-seller">吉林白城（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 5 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/164/300/200" alt="废旧手机配件" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">100个</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">废旧手机，手机电池</h4>
+          <p class="recycle-seller">吉林白城（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 6 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/165/300/200" alt="二手苹果手机" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">5台</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">二手苹果手机</h4>
+          <p class="recycle-seller">吉林白城（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 7 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/166/300/200" alt="二手手机主板" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">50千克</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">二手手机 手机电子板</h4>
+          <p class="recycle-seller">闵行电脑回收有限公司</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 8 -->
+      <div class="recycle-card" data-type="buy" data-category="phone">
+        <img src="https://picsum.photos/id/167/300/200" alt="废旧手机电子板" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">1辆</span>
+          </div>
+          <span class="recycle-tag tag-buy">求</span>
+          <h4 class="recycle-title">收废旧手机 电子板</h4>
+          <p class="recycle-seller">福建福州（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 9 -->
+      <div class="recycle-card" data-type="sell" data-category="phone">
+        <img src="https://picsum.photos/id/168/300/200" alt="二手三星苹果手机" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">1千克</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">二手三星苹果手机</h4>
+          <p class="recycle-seller">周先生（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 10 -->
+      <div class="recycle-card" data-type="sell" data-category="metal">
+        <img src="https://picsum.photos/id/169/300/200" alt="废旧金属" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">1千克</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">废旧金属回收</h4>
+          <p class="recycle-seller">周先生（个人经营）</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 11 -->
+      <div class="recycle-card" data-type="sell" data-category="plastic">
+        <img src="https://picsum.photos/id/170/300/200" alt="废旧塑料" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">100千克</span>
+          </div>
+          <span class="recycle-tag tag-sell">供</span>
+          <h4 class="recycle-title">废旧塑料瓶回收</h4>
+          <p class="recycle-seller">绿源回收站</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 物品卡片 12 -->
+      <div class="recycle-card" data-type="buy" data-category="paper">
+        <img src="https://picsum.photos/id/171/300/200" alt="废纸回收" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">价格面议</span>
+            <span class="recycle-quantity">500千克</span>
+          </div>
+          <span class="recycle-tag tag-buy">求</span>
+          <h4 class="recycle-title">大量收购废纸</h4>
+          <p class="recycle-seller">华兴纸业回收</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green">查看详情</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>&copy; 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 筛选功能
+  const filterType = document.getElementById('filterType');
+  const filterCategory = document.getElementById('filterCategory');
+  const searchInput = document.getElementById('searchInput');
+  const recycleGrid = document.getElementById('recycleGrid');
+  
+  // 从本地存储加载商品
+  function loadProducts() {
+    // 从本地存储获取商品数据
+    const products = JSON.parse(localStorage.getItem('greenhub_products') || '[]');
+    
+    // 清空现有卡片
+    recycleGrid.innerHTML = '';
+    
+    // 添加默认商品（如果没有本地存储的商品）
+    const defaultProducts = [
+      {
+        id: '1',
+        type: 'sell',
+        category: 'phone',
+        title: '大量出售废旧手机',
+        quantity: '5000台',
+        price: '价格面议',
+        seller: '鼎恒废品收购站',
+        images: ['https://picsum.photos/id/160/300/200']
+      },
+      {
+        id: '2',
+        type: 'buy',
+        category: 'phone',
+        title: '二手安卓手机',
+        quantity: '10盒',
+        price: '价格面议',
+        seller: '南宁（个人经营）',
+        images: ['https://picsum.photos/id/161/300/200']
+      },
+      {
+        id: '3',
+        type: 'sell',
+        category: 'phone',
+        title: '废旧手机',
+        quantity: '10千克',
+        price: '价格面议',
+        seller: '南宁再生资源回收有限公司',
+        images: ['https://picsum.photos/id/162/300/200']
+      },
+      {
+        id: '4',
+        type: 'sell',
+        category: 'computer',
+        title: '二手平板电脑',
+        quantity: '10台',
+        price: '价格面议',
+        seller: '吉林白城（个人经营）',
+        images: ['https://picsum.photos/id/163/300/200']
+      },
+      {
+        id: '5',
+        type: 'sell',
+        category: 'phone',
+        title: '废旧手机，手机电池',
+        quantity: '100个',
+        price: '价格面议',
+        seller: '吉林白城（个人经营）',
+        images: ['https://picsum.photos/id/164/300/200']
+      },
+      {
+        id: '6',
+        type: 'sell',
+        category: 'phone',
+        title: '二手苹果手机',
+        quantity: '5台',
+        price: '价格面议',
+        seller: '吉林白城（个人经营）',
+        images: ['https://picsum.photos/id/165/300/200']
+      },
+      {
+        id: '7',
+        type: 'sell',
+        category: 'phone',
+        title: '二手手机 手机电子板',
+        quantity: '50千克',
+        price: '价格面议',
+        seller: '闵行电脑回收有限公司',
+        images: ['https://picsum.photos/id/166/300/200']
+      },
+      {
+        id: '8',
+        type: 'buy',
+        category: 'phone',
+        title: '收废旧手机 电子板',
+        quantity: '1辆',
+        price: '价格面议',
+        seller: '福建福州（个人经营）',
+        images: ['https://picsum.photos/id/167/300/200']
+      },
+      {
+        id: '9',
+        type: 'sell',
+        category: 'phone',
+        title: '二手三星苹果手机',
+        quantity: '1千克',
+        price: '价格面议',
+        seller: '周先生（个人经营）',
+        images: ['https://picsum.photos/id/168/300/200']
+      },
+      {
+        id: '10',
+        type: 'sell',
+        category: 'metal',
+        title: '废旧金属回收',
+        quantity: '1千克',
+        price: '价格面议',
+        seller: '周先生（个人经营）',
+        images: ['https://picsum.photos/id/169/300/200']
+      },
+      {
+        id: '11',
+        type: 'sell',
+        category: 'plastic',
+        title: '废旧塑料瓶回收',
+        quantity: '100千克',
+        price: '价格面议',
+        seller: '绿源回收站',
+        images: ['https://picsum.photos/id/170/300/200']
+      },
+      {
+        id: '12',
+        type: 'buy',
+        category: 'paper',
+        title: '大量收购废纸',
+        quantity: '500千克',
+        price: '价格面议',
+        seller: '华兴纸业回收',
+        images: ['https://picsum.photos/id/171/300/200']
+      }
+    ];
+    
+    // 合并默认商品和本地存储商品
+    const allProducts = [...products, ...defaultProducts.filter(defaultProd => 
+      !products.some(prod => prod.id === defaultProd.id)
+    )];
+    
+    // 创建商品卡片
+    allProducts.forEach(product => {
+      const card = document.createElement('div');
+      card.className = 'recycle-card';
+      card.setAttribute('data-type', product.type);
+      card.setAttribute('data-category', product.category);
+      
+      const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'https://picsum.photos/id/160/300/200';
+      
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${product.title}" class="recycle-image">
+        <div class="recycle-content">
+          <div class="recycle-header">
+            <span class="recycle-type">${product.price || '价格面议'}</span>
+            <span class="recycle-quantity">${product.quantity || '数量面议'}</span>
+          </div>
+          <span class="recycle-tag ${product.type === 'sell' ? 'tag-sell' : 'tag-buy'}">${product.type === 'sell' ? '供' : '求'}</span>
+          <h4 class="recycle-title">${product.title}</h4>
+          <p class="recycle-seller">${product.seller || '未知卖家'}</p>
+          <div class="recycle-actions">
+            <button class="btn btn-orange" onclick="window.location.href='match.html'">我要询盘</button>
+            <button class="btn btn-green" onclick="window.location.href='chat.html?seller=${encodeURIComponent(product.seller || '未知卖家')}&product=${encodeURIComponent(product.title)}'">联系卖家</button>
+          </div>
+        </div>
+      `;
+      
+      recycleGrid.appendChild(card);
+    });
+    
+    // 重新绑定筛选功能
+    filterCards();
+  }
+  
+  function filterCards() {
+    const typeValue = filterType.value;
+    const categoryValue = filterCategory.value;
+    const searchValue = searchInput.value.toLowerCase();
+    
+    const cards = recycleGrid.querySelectorAll('.recycle-card');
+    cards.forEach(card => {
+      const cardType = card.getAttribute('data-type');
+      const cardCategory = card.getAttribute('data-category');
+      const cardTitle = card.querySelector('.recycle-title').textContent.toLowerCase();
+      
+      const typeMatch = typeValue === 'all' || cardType === typeValue;
+      const categoryMatch = categoryValue === 'all' || cardCategory === categoryValue;
+      const searchMatch = cardTitle.includes(searchValue);
+      
+      if (typeMatch && categoryMatch && searchMatch) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+  
+  filterType.addEventListener('change', filterCards);
+  filterCategory.addEventListener('change', filterCards);
+  searchInput.addEventListener('input', filterCards);
+  
+  // 页面加载时加载商品
+  window.addEventListener('load', loadProducts);
+  
+  // 地图功能
+  (function() {
+    // 模拟卖家数据（实际项目中从服务器获取）
+    const sellers = [
+      {
+        id: 1,
+        name: '鼎恒废品收购站',
+        title: '大量出售废旧手机',
+        category: 'phone',
+        quantity: '5000台',
+        price: '价格面议',
+        location: '南宁市青秀区',
+        latitude: 22.8167,
+        longitude: 108.3667
+      },
+      {
+        id: 2,
+        name: '南宁再生资源回收有限公司',
+        title: '废旧手机',
+        category: 'phone',
+        quantity: '10千克',
+        price: '价格面议',
+        location: '南宁市兴宁区',
+        latitude: 22.8333,
+        longitude: 108.3167
+      },
+      {
+        id: 3,
+        name: '绿源回收站',
+        title: '废旧塑料瓶回收',
+        category: 'plastic',
+        quantity: '100千克',
+        price: '价格面议',
+        location: '南宁市江南区',
+        latitude: 22.7667,
+        longitude: 108.3333
+      },
+      {
+        id: 4,
+        name: '华兴纸业回收',
+        title: '大量收购废纸',
+        category: 'paper',
+        quantity: '500千克',
+        price: '价格面议',
+        location: '南宁市西乡塘区',
+        latitude: 22.8667,
+        longitude: 108.2667
+      }
+    ];
+    
+    let map;
+    let markers = [];
+    let currentLocation = null;
+    
+    // 初始化地图
+    function initMap() {
+      // 默认中心点（南宁）
+      const center = new BMap.Point(108.3667, 22.8167);
+      map = new BMap.Map('map');
+      map.centerAndZoom(center, 12);
+      map.enableScrollWheelZoom(true);
+      
+      // 添加比例尺
+      map.addControl(new BMap.ScaleControl());
+      // 添加缩放控件
+      map.addControl(new BMap.NavigationControl());
+      
+      // 添加卖家标记
+      addSellerMarkers();
+    }
+    
+    // 添加卖家标记
+    function addSellerMarkers() {
+      // 清除旧标记
+      markers.forEach(marker => map.removeOverlay(marker));
+      markers = [];
+      
+      // 使用新的 addSellerMarker 函数添加所有卖家标记
+      sellers.forEach(seller => {
+        addSellerMarker(seller);
+      });
+    }
+    
+    // 定位用户
+    function locateUser() {
+      const geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(function(r) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+          currentLocation = r.point;
+          // 移动到用户位置
+          map.panTo(r.point);
+          // 添加用户标记
+          const userMarker = new BMap.Marker(r.point);
+          userMarker.setIcon(new BMap.Icon('https://api.map.baidu.com/img/markers.png', new BMap.Size(23, 25), {
+            offset: new BMap.Size(10, 25),
+            imageOffset: new BMap.Size(0, 0)
+          }));
+          map.addOverlay(userMarker);
+          // 更新卖家标记（显示距离）
+          addSellerMarkers();
+          alert('定位成功！已显示您与卖家的距离');
+        } else {
+          alert('定位失败：' + this.getStatus());
+        }
+      }, function() {
+        alert('无法获取位置信息');
+      }, {
+        enableHighAccuracy: true
+      });
+    }
+    
+    // 距离筛选
+    document.getElementById('distanceFilter').addEventListener('change', function() {
+      const maxDistance = parseInt(this.value);
+      
+      // 清除旧标记
+      markers.forEach(marker => map.removeOverlay(marker));
+      markers = [];
+      
+      // 添加符合距离要求的卖家标记
+      sellers.forEach(seller => {
+        if (currentLocation) {
+          const userPoint = new BMap.Point(currentLocation.lng, currentLocation.lat);
+          const sellerPoint = new BMap.Point(seller.longitude, seller.latitude);
+          const distance = map.getDistance(userPoint, sellerPoint) / 1000;
+          
+          if (distance <= maxDistance) {
+            addSellerMarker(seller);
+          }
+        } else {
+          // 如果没有用户位置，显示所有卖家
+          addSellerMarker(seller);
+        }
+      });
+    });
+    
+    // 添加单个卖家标记
+    function addSellerMarker(seller) {
+      const point = new BMap.Point(seller.longitude, seller.latitude);
+      const marker = new BMap.Marker(point);
+      
+      // 计算距离
+      let distance = '未知';
+      if (currentLocation) {
+        const userPoint = new BMap.Point(currentLocation.lng, currentLocation.lat);
+        const sellerPoint = new BMap.Point(seller.longitude, seller.latitude);
+        distance = (map.getDistance(userPoint, sellerPoint) / 1000).toFixed(1) + '公里';
+      }
+      
+      // 信息窗口
+      const infoWindow = new BMap.InfoWindow(`
+        <div style="padding: 10px;">
+          <h4 style="margin-bottom: 8px; color: #2c7a7b;">${seller.name}</h4>
+          <p style="margin: 4px 0;"><strong>物品：</strong>${seller.title}</p>
+          <p style="margin: 4px 0;"><strong>数量：</strong>${seller.quantity}</p>
+          <p style="margin: 4px 0;"><strong>价格：</strong>${seller.price}</p>
+          <p style="margin: 4px 0;"><strong>位置：</strong>${seller.location}</p>
+          ${currentLocation ? `<p style="margin: 4px 0; color: #fa8c16;"><strong>距离：</strong>${distance}</p>` : ''}
+          <button onclick="window.location.href='match.html'" style="margin-top: 10px; padding: 5px 10px; background: #2c7a7b; color: white; border: none; border-radius: 4px; cursor: pointer;">我要询盘</button>
+        </div>
+      `);
+      
+      marker.addEventListener('click', function() {
+        marker.openInfoWindow(infoWindow);
+      });
+      
+      map.addOverlay(marker);
+      markers.push(marker);
+    }
+    
+    // 定位按钮
+    document.getElementById('locateMe').addEventListener('click', locateUser);
+    
+    // 视图切换
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const view = this.getAttribute('data-view');
+        
+        if (view === 'list') {
+          // 切换到列表视图
+          document.getElementById('map').style.display = 'none';
+          document.querySelector('.recycle-grid').style.display = 'grid';
+        } else {
+          // 切换到地图视图
+          document.getElementById('map').style.display = 'block';
+          document.querySelector('.recycle-grid').style.display = 'none';
+        }
+      });
+    });
+    
+    // 页面加载完成后初始化地图
+    window.onload = function() {
+      initMap();
+    };
+  })();
+</script>
+</body>
+</html>

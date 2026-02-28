@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>注册 | GreenHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .auth-body {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/id/1068/1920/1080');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth {
+      width: 100%;
+      max-width: 400px;
+    }
+    .auth-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .auth-head {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .brand-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2c7a7b;
+      margin-bottom: 1rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .muted {
+      color: #666;
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    input {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    input:focus {
+      outline: none;
+      border-color: #2c7a7b;
+      box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.1);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inline {
+      flex-direction: row;
+      align-items: center;
+    }
+    .inline input {
+      margin-right: 0.5rem;
+    }
+    .small {
+      font-size: 0.875rem;
+    }
+    .btn {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-ghost:hover {
+      background: #f5f5f5;
+    }
+    .sep {
+      margin: 1.5rem 0;
+      border: none;
+      border-top: 1px solid #eee;
+    }
+    #registerHint {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    a {
+      color: #2c7a7b;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="auth-body">
+<main class="auth">
+  <section class="card auth-card">
+    <div class="auth-head">
+      <div class="brand-inline">
+        <span class="brand-mark">GH</span>
+        <strong>GreenHub</strong>
+      </div>
+      <p class="muted">注册新账户</p>
+    </div>
+
+    <form class="form" id="registerForm">
+      <label>
+        <span>姓名</span>
+        <input name="name" type="text" placeholder="请输入您的姓名" required />
+      </label>
+      <label>
+        <span>邮箱</span>
+        <input name="email" type="email" placeholder="you@email.com" required />
+      </label>
+      <label>
+        <span>密码</span>
+        <input name="password" type="password" placeholder="••••••••" required />
+      </label>
+      <label>
+        <span>确认密码</span>
+        <input name="confirmPassword" type="password" placeholder="••••••••" required />
+      </label>
+      <button class="btn btn-primary" type="submit">注册</button>
+      <p class="muted small" id="registerHint"></p>
+    </form>
+
+    <hr class="sep" />
+    <div class="row" style="justify-content: center;">
+      <p class="muted small">已有账户？ <a href="login.html">立即登录</a></p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/app.js"></script>
+<script>
+  const form = document.getElementById('registerForm');
+  const hint = document.getElementById('registerHint');
+
+  // 初始化用户数据库
+  function initUserDatabase() {
+    if (!localStorage.getItem('gh:users')) {
+      const defaultUsers = {
+        'demo@greenhub.local': {
+          password: '12345678',
+          name: '演示用户'
+        },
+        'admin@greenhub.local': {
+          password: 'admin123',
+          name: '管理员'
+        }
+      };
+      localStorage.setItem('gh:users', JSON.stringify(defaultUsers));
+    }
+  }
+
+  // 初始化数据库
+  initUserDatabase();
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim().toLowerCase();
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    // 验证密码
+    if (password !== confirmPassword) {
+      hint.textContent = '两次输入的密码不一致';
+      hint.style.color = '#e53e3e';
+      return;
+    }
+
+    // 获取用户数据库
+    const users = JSON.parse(localStorage.getItem('gh:users') || '{}');
+
+    // 检查用户是否已存在
+    if (users[email]) {
+      hint.textContent = '该邮箱已注册';
+      hint.style.color = '#e53e3e';
+    } else {
+      // 添加新用户
+      users[email] = {
+        password: password,
+        name: name
+      };
+      localStorage.setItem('gh:users', JSON.stringify(users));
+      
+      // 自动登录
+      localStorage.setItem('gh:currentUser', JSON.stringify({
+        email: email,
+        name: name
+      }));
+      
+      // 检查是否有目标职位
+      const targetJob = sessionStorage.getItem('gh:targetJob');
+      
+      if (targetJob) {
+        // 有目标职位，跳转到申请页面
+        hint.textContent = '注册成功，正在跳转到职位申请页面…';
+        hint.style.color = '#2c7a7b';
+        sessionStorage.removeItem('gh:targetJob');
+        setTimeout(() => location.href = `job-application.html?job=${encodeURIComponent(targetJob)}`, 1500);
+      } else {
+        // 没有目标职位，跳转到首页
+        hint.textContent = '注册成功，正在跳转…';
+        hint.style.color = '#2c7a7b';
+        setTimeout(() => location.href = 'index.html', 1500);
+      }
+    }
+  });
+</script>
+</body>
+</html>

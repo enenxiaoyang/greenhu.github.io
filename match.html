@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>智能匹配 | GreenHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-ghost:hover {
+      background: #f5f5f5;
+    }
+    
+    /* 页面标题区域 */
+    .page-header {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://picsum.photos/id/110/1920/400');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 0 40px;
+      text-align: center;
+      color: white;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .page-header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    /* 内容区域 */
+    .content-section {
+      padding: 40px 0;
+    }
+    
+    /* 匹配卡片 */
+    .match-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .match-header {
+      background: #2c7a7b;
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .match-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .match-score {
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    
+    /* 聊天界面 */
+    .chat-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 768px) {
+      .chat-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* 消息列表 */
+    .message-list {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      height: 600px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.bot {
+      align-items: flex-start;
+    }
+    .message.user {
+      align-items: flex-end;
+    }
+    .message-content {
+      max-width: 80%;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .message.bot .message-content {
+      background: #e6f7ff;
+      border-top-left-radius: 0;
+      color: #1890ff;
+    }
+    .message.user .message-content {
+      background: #2c7a7b;
+      color: white;
+      border-top-right-radius: 0;
+    }
+    .message-time {
+      font-size: 0.8rem;
+      color: #999;
+      margin: 0 0.5rem;
+    }
+    
+    /* 匹配结果 */
+    .match-results {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      border: 1px solid #eee;
+    }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .result-count {
+      background: #52c41a;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    
+    /* 匹配项 */
+    .match-item {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .match-item:hover {
+      border-color: #2c7a7b;
+      box-shadow: 0 2px 8px rgba(44, 122, 123, 0.1);
+    }
+    .match-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .match-item-title {
+      font-weight: 600;
+      color: #333;
+    }
+    .match-item-price {
+      color: #ff4d4f;
+      font-weight: 600;
+    }
+    .match-item-info {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .match-item-distance {
+      color: #fa8c16;
+    }
+    .match-item-rating {
+      color: #faad14;
+    }
+    .match-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .btn-small {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+    }
+    
+    /* 输入区域 */
+    .input-area {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    /* 权重设置 */
+    .weight-settings {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #eee;
+    }
+    .weight-header {
+      margin-bottom: 1rem;
+    }
+    .weight-header h3 {
+      color: #2c7a7b;
+      margin-bottom: 0.5rem;
+    }
+    .weight-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .weight-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .weight-slider {
+      flex: 1;
+      margin: 0 1rem;
+    }
+    .weight-value {
+      width: 50px;
+      text-align: right;
+      font-weight: 500;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #ddd;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #2c7a7b;
+      cursor: pointer;
+    }
+    
+    /* 页脚 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a class="active" href="match.html">智能匹配</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="login.html">登录/注册</a>
+    </div>
+  </div>
+</header>
+
+<!-- 页面标题 -->
+<section class="page-header">
+  <div class="container">
+    <h1>智能匹配</h1>
+    <p>基于距离、价格和评分的智能匹配系统，为您找到最佳交易伙伴</p>
+  </div>
+</section>
+
+<!-- 内容区域 -->
+<section class="content-section">
+  <div class="container">
+    <!-- 权重设置 -->
+    <div class="weight-settings">
+      <div class="weight-header">
+        <h3>匹配权重设置</h3>
+        <p class="muted small">调整各因素的权重，系统将根据您的偏好进行匹配</p>
+      </div>
+      <div class="weight-item">
+        <div class="weight-label">
+          <span>📍 距离权重</span>
+          <span class="muted small">(距离越近优先级越高)</span>
+        </div>
+        <div class="weight-slider">
+          <input type="range" id="distanceWeight" min="0" max="100" value="40">
+        </div>
+        <div class="weight-value" id="distanceWeightValue">40%</div>
+      </div>
+      <div class="weight-item">
+        <div class="weight-label">
+          <span>💰 价格权重</span>
+          <span class="muted small">(价格越高优先级越高)</span>
+        </div>
+        <div class="weight-slider">
+          <input type="range" id="priceWeight" min="0" max="100" value="30">
+        </div>
+        <div class="weight-value" id="priceWeightValue">30%</div>
+      </div>
+      <div class="weight-item">
+        <div class="weight-label">
+          <span>⭐ 评分权重</span>
+          <span class="muted small">(评分越高优先级越高)</span>
+        </div>
+        <div class="weight-slider">
+          <input type="range" id="ratingWeight" min="0" max="100" value="30">
+        </div>
+        <div class="weight-value" id="ratingWeightValue">30%</div>
+      </div>
+    </div>
+
+    <!-- 匹配卡片 -->
+    <div class="match-card">
+      <div class="match-header">
+        <div class="match-title">🎯 智能匹配助手</div>
+        <div class="match-score">匹配度: <span id="matchScore">95%</span></div>
+      </div>
+      
+      <div class="container" style="padding: 2rem;">
+        <div class="chat-container">
+          <!-- 消息列表 -->
+          <div class="message-list" id="messageList">
+            <div class="message bot">
+              <div class="message-content">
+                👋 你好！我是 GreenHub 智能匹配助手，能帮你找到最合适的交易伙伴。请问你是要出售还是求购物品？
+              </div>
+              <div class="message-time">10:00</div>
+            </div>
+            <div class="message user">
+              <div class="message-content">
+                我想出售一批废旧手机
+              </div>
+              <div class="message-time">10:01</div>
+            </div>
+            <div class="message bot">
+              <div class="message-content">
+                好的！请告诉我你要出售的废旧手机的具体信息，比如数量、型号、成色等，我会帮你匹配最合适的买家。
+              </div>
+              <div class="message-time">10:02</div>
+            </div>
+            <div class="message user">
+              <div class="message-content">
+                大约5000台，主要是智能手机，有一些是完好的，有一些是损坏的
+              </div>
+              <div class="message-time">10:03</div>
+            </div>
+            <div class="message bot">
+              <div class="message-content">
+                了解了！我已经为你找到3个匹配度较高的买家，他们都对废旧手机有需求。请查看右侧的匹配结果，点击查看详情了解更多信息。
+              </div>
+              <div class="message-time">10:04</div>
+            </div>
+          </div>
+          
+          <!-- 匹配结果 -->
+          <div class="match-results">
+            <div class="result-header">
+              <div class="result-title">🔍 匹配结果</div>
+              <div class="result-count">3个匹配</div>
+            </div>
+            
+            <!-- 匹配项 1 -->
+            <div class="match-item" data-id="1">
+              <div class="match-item-header">
+                <div class="match-item-title">南宁再生资源回收有限公司</div>
+                <div class="match-item-price">价格面议</div>
+              </div>
+              <div class="match-item-info">
+                <span class="match-item-distance">📍 距离: 2.5公里</span>
+                <span class="match-item-rating">⭐ 评分: 4.8/5</span>
+                <span>需求: 10000台</span>
+              </div>
+              <p class="muted small">专业回收公司，有10年回收经验，提供上门回收服务</p>
+              <div class="match-item-actions">
+                <button class="btn btn-primary btn-small">联系对方</button>
+                <button class="btn btn-ghost btn-small">查看详情</button>
+              </div>
+            </div>
+            
+            <!-- 匹配项 2 -->
+            <div class="match-item" data-id="2">
+              <div class="match-item-header">
+                <div class="match-item-title">鼎恒废品收购站</div>
+                <div class="match-item-price">价格面议</div>
+              </div>
+              <div class="match-item-info">
+                <span class="match-item-distance">📍 距离: 5.3公里</span>
+                <span class="match-item-rating">⭐ 评分: 4.6/5</span>
+                <span>需求: 8000台</span>
+              </div>
+              <p class="muted small">本地收购站，现金交易，快速结算</p>
+              <div class="match-item-actions">
+                <button class="btn btn-primary btn-small">联系对方</button>
+                <button class="btn btn-ghost btn-small">查看详情</button>
+              </div>
+            </div>
+            
+            <!-- 匹配项 3 -->
+            <div class="match-item" data-id="3">
+              <div class="match-item-header">
+                <div class="match-item-title">福建福州（个人经营）</div>
+                <div class="match-item-price">价格面议</div>
+              </div>
+              <div class="match-item-info">
+                <span class="match-item-distance">📍 距离: 10.2公里</span>
+                <span class="match-item-rating">⭐ 评分: 4.3/5</span>
+                <span>需求: 5000台</span>
+              </div>
+              <p class="muted small">个人回收商，主要回收电子板和零部件</p>
+              <div class="match-item-actions">
+                <button class="btn btn-primary btn-small">联系对方</button>
+                <button class="btn btn-ghost btn-small">查看详情</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 输入区域 -->
+        <div class="input-area">
+          <input type="text" id="messageInput" placeholder="输入消息...">
+          <button class="btn btn-primary" id="sendMessage">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="match.html">智能匹配</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>&copy; 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 权重滑块
+  const distanceSlider = document.getElementById('distanceWeight');
+  const priceSlider = document.getElementById('priceWeight');
+  const ratingSlider = document.getElementById('ratingWeight');
+  const distanceValue = document.getElementById('distanceWeightValue');
+  const priceValue = document.getElementById('priceWeightValue');
+  const ratingValue = document.getElementById('ratingWeightValue');
+  
+  distanceSlider.addEventListener('input', function() {
+    distanceValue.textContent = this.value + '%';
+    updateMatchScore();
+  });
+  
+  priceSlider.addEventListener('input', function() {
+    priceValue.textContent = this.value + '%';
+    updateMatchScore();
+  });
+  
+  ratingSlider.addEventListener('input', function() {
+    ratingValue.textContent = this.value + '%';
+    updateMatchScore();
+  });
+  
+  // 更新匹配分数
+  function updateMatchScore() {
+    const distance = parseInt(distanceSlider.value);
+    const price = parseInt(priceSlider.value);
+    const rating = parseInt(ratingSlider.value);
+    
+    // 模拟匹配分数计算
+    const score = Math.min(95 + (distance + price + rating) / 30, 100);
+    document.getElementById('matchScore').textContent = Math.round(score) + '%';
+  }
+  
+  // 消息发送
+  const messageInput = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendMessage');
+  const messageList = document.getElementById('messageList');
+  
+  sendButton.addEventListener('click', sendMessage);
+  messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+  
+  function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message) {
+      // 添加用户消息
+      addMessage('user', message);
+      messageInput.value = '';
+      
+      // 模拟机器人回复
+      setTimeout(() => {
+        const responses = [
+          '好的，我已经收到你的信息。让我为你匹配最合适的交易伙伴...',
+          '了解了！我正在分析你的需求，稍等片刻...',
+          '我已经为你找到几个匹配度较高的伙伴，你可以在右侧查看详情。',
+          '根据你的需求，我推荐你优先考虑距离较近的回收商，这样可以节省运输成本。'
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addMessage('bot', randomResponse);
+      }, 1000);
+    }
+  }
+  
+  function addMessage(type, content) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = content;
+    
+    const messageTime = document.createElement('div');
+    messageTime.className = 'message-time';
+    const now = new Date();
+    messageTime.textContent = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+    
+    messageDiv.appendChild(messageContent);
+    messageDiv.appendChild(messageTime);
+    messageList.appendChild(messageDiv);
+    messageList.scrollTop = messageList.scrollHeight;
+  }
+  
+  // 匹配项点击
+  document.querySelectorAll('.match-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      alert(`查看详情：匹配项 ${id}\n\n（演示功能）`);
+    });
+  });
+  
+  // 联系按钮
+  document.querySelectorAll('.btn-primary.btn-small').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      alert('正在联系对方...\n\n（演示功能）');
+    });
+  });
+  
+  // 查看详情按钮
+  document.querySelectorAll('.btn-ghost.btn-small').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      alert('查看详细信息...\n\n（演示功能）');
+    });
+  });
+</script>
+</body>
+</html>

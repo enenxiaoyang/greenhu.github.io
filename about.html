@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>关于我们 | GreenHub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* 全局样式调整 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+
+    /* 英雄区域样式 */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 页面内容样式 */
+    .section {
+      padding: 4rem 0;
+    }
+    .section-head {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-head h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+    }
+    .section-head p {
+      font-size: 1.1rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* 关于我们内容样式 */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 4rem;
+    }
+    .about-text {
+      line-height: 1.8;
+    }
+    .about-text h3 {
+      color: #2c7a7b;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+    .about-text p {
+      margin-bottom: 1.5rem;
+      color: #666;
+    }
+    .about-image {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .about-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+
+    /* 使命愿景样式 */
+    .mission-vision {
+      background: #f8f9fa;
+      padding: 4rem 0;
+    }
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .mission-item {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .mission-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      margin: 0 auto 1.5rem;
+      overflow: hidden;
+    }
+    .mission-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mission-item:hover {
+      transform: translateY(-5px);
+    }
+    .mission-item h3 {
+      color: #2c7a7b;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+    .mission-item p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* 团队成员样式 */
+    .team-section {
+      padding: 4rem 0;
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    .team-member {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+    }
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-member h4 {
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .team-member p {
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    /* 页脚样式 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .about-content {
+        grid-template-columns: 1fr;
+      }
+      .mission-grid {
+        grid-template-columns: 1fr;
+      }
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a class="active" href="about.html">关于我们</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="login.html">加入我们</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="container">
+      <h1>关于 GreenHub</h1>
+      <p>我们是一个致力于环境保护和可持续发展的非营利组织</p>
+    </div>
+  </section>
+
+  <!-- 关于我们内容 -->
+  <div class="section">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h3>我们的故事</h3>
+          <p>GreenHub 成立于2026年，是由一群热爱环保的志愿者发起的非营利组织。我们致力于通过实际行动推动环境保护，促进资源循环利用，减少碳排放，构建可持续的绿色未来。</p>
+          <div style="text-align: center; margin: 2rem 0;">
+
+          </div>
+          <p>我们相信，每一个小小的行动都能带来改变。从垃圾分类到旧物回收，从低碳通勤到环保教育，我们希望通过各种方式，让环保理念深入人心，让更多人参与到环保行动中来。</p>
+          <div style="text-align: center; margin: 2rem 0;">
+            <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="垃圾分类" style="max-width: 100%; height: 300px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          </div>
+          <p>通过我们的平台，你可以记录自己的环保行动，参与社区环保项目，买卖二手物品，计算个人碳足迹，为环境保护贡献自己的一份力量。</p>
+          <div style="text-align: center; margin: 2rem 0;">
+            <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="可持续发展" style="max-width: 100%; height: 300px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          </div>
+        </div>
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="我们的团队">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使命愿景 -->
+  <section class="mission-vision">
+    <div class="container">
+      <div class="section-head">
+        <h2>我们的使命与愿景</h2>
+      </div>
+      <div class="mission-grid">
+        <div class="mission-item">
+          <div class="mission-icon">
+            <div style="width: 100%; height: 100%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; font-size: 3rem;">🌱</div>
+          </div>
+          <h3>使命</h3>
+          <p>通过教育、行动和倡导，推动环境保护和可持续发展，构建人与自然和谐共处的社会。我们致力于提高公众环保意识，促进资源循环利用，减少碳排放，保护生物多样性，为子孙后代创造一个更加美好的地球。</p>
+          <p>我们相信，每一个人都可以通过自己的行动为环境保护做出贡献，无论是减少一次性用品的使用，还是参与社区环保活动，或是选择绿色出行方式，这些小小的改变都能汇聚成巨大的力量。</p>
+        </div>
+        <div class="mission-item">
+          <div class="mission-icon">
+            <div style="width: 100%; height: 100%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; font-size: 3rem;">🌟</div>
+          </div>
+          <h3>愿景</h3>
+          <p>创造一个环境友好、资源循环、低碳可持续的未来，让每个人都能享受到清洁的空气、水和土壤。我们希望看到一个没有污染、没有浪费、人与自然和谐共生的世界。</p>
+          <p>在这个愿景中，绿色生活方式成为常态，可再生能源得到广泛应用，资源循环利用体系完善，生物多样性得到有效保护，每个人都能够在健康、可持续的环境中生活和工作。</p>
+        </div>
+        <div class="mission-item">
+          <div class="mission-icon">
+            <div style="width: 100%; height: 100%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; font-size: 3rem;">💎</div>
+          </div>
+          <h3>价值观</h3>
+          <p>尊重自然、团结合作、创新行动、开放包容，以实际行动推动环境保护和可持续发展。我们相信，只有通过共同努力，才能实现环境保护的目标。</p>
+          <p>我们尊重自然规律，倡导与自然和谐相处；我们注重团队合作，相信集体的力量；我们鼓励创新行动，寻找更有效的环保解决方案；我们保持开放包容，欢迎所有关心环保的人士加入我们的行列。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 团队成员 -->
+  <section class="team-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>我们的团队</h2>
+        <p>由一群热爱环保的专业人士和志愿者组成</p>
+      </div>
+      <div style="text-align: center; margin: 2rem 0;">
+        <img src="https://images.unsplash.com/photo-1556761175-4b46a572b686?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="团队合作" style="max-width: 100%; height: 400px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      </div>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="张明">
+          </div>
+          <h4>张明</h4>
+          <p>创始人 & 执行董事</p>
+          <div style="text-align: center; margin: 1rem 0 0;">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="领导力" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          </div>
+        </div>
+        <div class="team-member">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="李华">
+          </div>
+          <h4>李华</h4>
+          <p>项目总监</p>
+          <div style="text-align: center; margin: 1rem 0 0;">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="项目管理" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="赵强">
+          </div>
+          <h4>赵强</h4>
+          <p>技术总监</p>
+          <div style="text-align: center; margin: 1rem 0 0;">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="技术开发" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="about.html">关于我们</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>© 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>项目交流群 | GreenHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-ghost:hover {
+      background: #f5f5f5;
+    }
+    
+    /* 聊天页面样式 */
+    .chat-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
+    
+    /* 聊天头部 */
+    .chat-header {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chat-title {
+      font-weight: 600;
+      color: #2c7a7b;
+    }
+    .online-status {
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #52c41a;
+      margin-right: 0.5rem;
+    }
+    
+    /* 聊天内容区域 */
+    .chat-messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    /* 消息样式 */
+    .message {
+      max-width: 70%;
+      padding: 0.75rem 1rem;
+      border-radius: 18px;
+      line-height: 1.4;
+    }
+    .message-sent {
+      align-self: flex-end;
+      background: #2c7a7b;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .message-received {
+      align-self: flex-start;
+      background: #f0f0f0;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+    .message-time {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+      text-align: right;
+    }
+    
+    /* 聊天输入区域 */
+    .chat-input-area {
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+    .chat-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 0.75rem 1rem;
+      resize: none;
+      min-height: 40px;
+      max-height: 120px;
+    }
+    .send-btn {
+      background: #2c7a7b;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .send-btn:hover {
+      background: #246a6b;
+      transform: scale(1.05);
+    }
+    
+    /* 成员列表 */
+    .members-list {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1rem;
+      width: 250px;
+      display: none;
+      z-index: 1001;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .members-list.active {
+      display: block;
+    }
+    .members-list h4 {
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+    }
+    .member-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #2c7a7b;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .member-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #52c41a;
+      margin-left: auto;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .chat-container {
+        margin: 0;
+        border-radius: 0;
+        height: 90vh;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a class="active" href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="login.html">加入我们</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="chat-container">
+      <!-- 聊天头部 -->
+      <div class="chat-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="window.location.href='projects.html'">返回项目</button>
+          <div>
+            <div class="chat-title" id="projectName">社区垃圾分类宣传 - 交流群</div>
+            <div class="online-status">
+              <span class="online-dot"></span>
+              <span id="onlineCount">5人在线</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-ghost" onclick="toggleMembersList()">查看成员</button>
+      </div>
+      
+      <!-- 聊天内容 -->
+      <div class="chat-messages" id="chatMessages">
+        <!-- 系统消息 -->
+        <div class="message message-received">
+          <div>欢迎加入社区垃圾分类宣传交流群！</div>
+          <div class="message-time">10:00</div>
+        </div>
+        
+        <!-- 其他用户消息 -->
+        <div class="message message-received">
+          <div><strong>李女士</strong></div>
+          <div>大家好，我是负责社区垃圾分类宣传的志愿者，很高兴认识大家！</div>
+          <div class="message-time">10:05</div>
+        </div>
+        
+        <!-- 其他用户消息 -->
+        <div class="message message-received">
+          <div><strong>王先生</strong></div>
+          <div>我也想参与这个项目，请问需要做些什么？</div>
+          <div class="message-time">10:08</div>
+        </div>
+        
+        <!-- 自己的消息 -->
+        <div class="message message-sent">
+          <div>我们需要制作宣传海报和组织社区活动，欢迎大家参与！</div>
+          <div class="message-time">10:10</div>
+        </div>
+      </div>
+      
+      <!-- 聊天输入 -->
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chatInput" placeholder="输入消息..."></textarea>
+        <button class="send-btn" onclick="sendMessage()">
+          <span>➤</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- 成员列表 -->
+    <div class="members-list" id="membersList">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h4>群成员</h4>
+        <button class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="openAddMemberModal()">添加成员</button>
+      </div>
+      <div class="member-item">
+        <div class="member-avatar">李</div>
+        <div>李女士</div>
+        <div class="member-status"></div>
+      </div>
+      <div class="member-item">
+        <div class="member-avatar">王</div>
+        <div>王先生</div>
+        <div class="member-status"></div>
+      </div>
+      <div class="member-item">
+        <div class="member-avatar">张</div>
+        <div>张女士</div>
+        <div class="member-status"></div>
+      </div>
+      <div class="member-item">
+        <div class="member-avatar">刘</div>
+        <div>刘先生</div>
+        <div class="member-status"></div>
+      </div>
+      <div class="member-item">
+        <div class="member-avatar">陈</div>
+        <div>陈女士</div>
+        <div class="member-status"></div>
+      </div>
+    </div>
+    
+    <!-- 添加成员弹窗 -->
+    <div id="addMemberModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+      <div style="background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 400px;">
+        <h4 style="margin-bottom: 1rem; color: #2c7a7b;">添加成员</h4>
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">成员姓名</label>
+          <input type="text" id="memberName" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;" placeholder="输入成员姓名">
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+          <button class="btn btn-ghost" onclick="closeAddMemberModal()">取消</button>
+          <button class="btn btn-primary" onclick="addMember()">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" style="margin-top: 2rem;">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        
+      </div>
+      <p>GreenHub · 项目交流群</p>
+      <p>© 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 切换成员列表
+  function toggleMembersList() {
+    document.getElementById('membersList').classList.toggle('active');
+  }
+  
+  // 发送消息
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+      const chatMessages = document.getElementById('chatMessages');
+      const now = new Date();
+      const time = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+      
+      // 创建消息元素
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message message-sent';
+      messageElement.innerHTML = `
+        <div>${message}</div>
+        <div class="message-time">${time}</div>
+      `;
+      
+      // 添加到聊天内容
+      chatMessages.appendChild(messageElement);
+      
+      // 滚动到底部
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // 清空输入框
+      input.value = '';
+      
+      // 模拟回复
+      setTimeout(() => {
+        const replyElement = document.createElement('div');
+        replyElement.className = 'message message-received';
+        
+        const replies = [
+          '好的，我明白了！',
+          '这个想法不错！',
+          '我们可以一起讨论一下。',
+          '我也有类似的想法。',
+          '没问题，我会参与的。'
+        ];
+        
+        const randomReply = replies[Math.floor(Math.random() * replies.length)];
+        const randomNames = ['李女士', '王先生', '张女士', '刘先生', '陈女士'];
+        const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+        
+        replyElement.innerHTML = `
+          <div><strong>${randomName}</strong></div>
+          <div>${randomReply}</div>
+          <div class="message-time">${time}</div>
+        `;
+        
+        chatMessages.appendChild(replyElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 1000);
+    }
+  }
+  
+  // 回车键发送消息
+  document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  
+  // 初始化聊天界面
+  function initChat() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const seller = urlParams.get('seller');
+    const product = urlParams.get('product');
+    const projectId = urlParams.get('project');
+    const projectName = document.getElementById('projectName');
+    
+    if (seller && product) {
+      // 从marketplace.html跳转过来的聊天
+      projectName.textContent = `${seller} - 商品咨询`;
+      
+      // 添加系统消息
+      const chatMessages = document.getElementById('chatMessages');
+      chatMessages.innerHTML = `
+        <div class="message message-received">
+          <div>欢迎与 ${seller} 交流关于 "${product}" 的信息！</div>
+          <div class="message-time">${getCurrentTime()}</div>
+        </div>
+      `;
+      
+      // 更新返回按钮
+      const backButton = document.querySelector('.chat-header button:first-child');
+      backButton.onclick = function() { window.location.href='marketplace.html'; };
+    } else if (projectId) {
+      // 从projects.html跳转过来的聊天
+      switch(projectId) {
+        case '1':
+          projectName.textContent = '社区垃圾分类宣传 - 交流群';
+          break;
+        case '2':
+          projectName.textContent = '旧物循环计划 - 交流群';
+          break;
+        case '3':
+          projectName.textContent = '低碳通勤挑战 - 交流群';
+          break;
+        default:
+          projectName.textContent = '项目交流群';
+      }
+    } else {
+      projectName.textContent = '交流群';
+    }
+  }
+  
+  // 获取当前时间
+  function getCurrentTime() {
+    const now = new Date();
+    return now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+  }
+  
+  // 打开添加成员弹窗
+  function openAddMemberModal() {
+    document.getElementById('addMemberModal').style.display = 'flex';
+  }
+  
+  // 关闭添加成员弹窗
+  function closeAddMemberModal() {
+    document.getElementById('addMemberModal').style.display = 'none';
+    document.getElementById('memberName').value = '';
+  }
+  
+  // 添加成员
+  function addMember() {
+    const memberName = document.getElementById('memberName').value.trim();
+    const membersList = document.getElementById('membersList');
+    const memberItems = membersList.querySelectorAll('.member-item');
+    
+    // 检查成员数量上限
+    if (memberItems.length >= 50) {
+      alert('群成员已达到上限（50人），无法添加更多成员！');
+      return;
+    }
+    
+    if (memberName) {
+      // 创建新成员元素
+      const memberItem = document.createElement('div');
+      memberItem.className = 'member-item';
+      
+      // 取姓名的第一个字作为头像
+      const avatarText = memberName.charAt(0);
+      
+      memberItem.innerHTML = `
+        <div class="member-avatar">${avatarText}</div>
+        <div>${memberName}</div>
+        <div class="member-status"></div>
+      `;
+      
+      // 添加到成员列表
+      membersList.appendChild(memberItem);
+      
+      // 更新在线人数
+      updateOnlineCount();
+      
+      // 关闭弹窗
+      closeAddMemberModal();
+      
+      // 显示成功消息
+      alert('成员添加成功！');
+      
+      // 在聊天中显示系统消息
+      const chatMessages = document.getElementById('chatMessages');
+      const now = new Date();
+      const time = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+      
+      const systemMessage = document.createElement('div');
+      systemMessage.className = 'message message-received';
+      systemMessage.innerHTML = `
+        <div>${memberName} 加入了群聊</div>
+        <div class="message-time">${time}</div>
+      `;
+      
+      chatMessages.appendChild(systemMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else {
+      alert('请输入成员姓名！');
+    }
+  }
+  
+  // 更新在线人数
+  function updateOnlineCount() {
+    const membersList = document.getElementById('membersList');
+    const memberItems = membersList.querySelectorAll('.member-item');
+    const onlineCount = document.getElementById('onlineCount');
+    onlineCount.textContent = `${memberItems.length}人在线`;
+  }
+  
+  // 页面加载完成后初始化
+  window.onload = function() {
+    initChat();
+    updateOnlineCount();
+  };
+</script>
+</body>
+</html>

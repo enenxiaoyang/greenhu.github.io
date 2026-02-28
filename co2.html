@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CO₂/碳足迹 | GreenHub</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://picsum.photos/id/1059/1920/1080') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* 创新点样式 */
+    .innovation-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .innovation-item {
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      background: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .innovation-item:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .innovation-item strong {
+      display: block;
+      color: #2c7a7b;
+      margin-bottom: 0.5rem;
+    }
+    .innovation-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    /* 表单元素样式 */
+    select {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      color: #333 !important;
+      background: white;
+    }
+    select:focus {
+      outline: none;
+      border-color: #2c7a7b;
+      box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.1);
+    }
+    
+    /* 模态框样式 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      color: #333 !important;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h3 {
+      margin: 0;
+      color: #2c7a7b;
+    }
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #333;
+    }
+    .modal-body {
+      color: #333 !important;
+    }
+    .modal-body p {
+      line-height: 1.6;
+      color: #333 !important;
+    }
+    .modal-body br {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a class="active" href="co2.html">CO₂/碳足迹</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" id="btnTheme" type="button">主题</button>
+      <a class="btn btn-primary" href="login.html">登录</a>
+    </div>
+    <button class="nav-burger" id="btnBurger" aria-label="打开菜单" aria-expanded="false" type="button">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="index.html">首页</a>
+    <a href="projects.html">行动/项目</a>
+    <a href="marketplace.html">废品买卖</a>
+    <a href="co2.html">CO₂/碳足迹</a>
+    <a href="login.html">登录</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <h1>CO₂ 与个人碳足迹</h1>
+      <p>了解并减少你的碳足迹，为地球环境做出贡献</p>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="muted">这里提供一个"可解释"的简易估算器（非权威核算）。你可以按需替换排放因子。</p>
+      </div>
+
+      <!-- 碳足迹概念图片 -->
+      <div class="carbon-intro-images" style="margin-bottom: 2rem;">
+        <div class="grid-3">
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <img src="https://picsum.photos/id/110/400/250" alt="碳排放" style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 1rem;">
+              <h4 style="color: #2c7a7b; margin-bottom: 0.5rem;">碳排放来源</h4>
+              <p class="muted small">日常生活中的用电、出行、消费都会产生碳排放</p>
+            </div>
+          </div>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <img src="https://picsum.photos/id/111/400/250" alt="绿色出行" style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 1rem;">
+              <h4 style="color: #2c7a7b; margin-bottom: 0.5rem;">绿色出行</h4>
+              <p class="muted small">选择公共交通、骑行或步行可减少碳足迹</p>
+            </div>
+          </div>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <img src="https://picsum.photos/id/112/400/250" alt="节能减排" style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 1rem;">
+              <h4 style="color: #2c7a7b; margin-bottom: 0.5rem;">节能减排</h4>
+              <p class="muted small">节约用电、使用清洁能源是减碳的重要方式</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <section class="card">
+          <h3>碳足迹估算</h3>
+          <form class="form" id="footprintForm">
+            <div class="grid-2">
+              <label>
+                <span>月用电（kWh）</span>
+                <input name="kwh" type="number" step="1" min="0" value="120" required />
+              </label>
+              <label>
+                <span>通勤里程（km/月）</span>
+                <input name="commuteKm" type="number" step="1" min="0" value="80" required />
+              </label>
+            </div>
+
+            <div class="grid-2">
+              <label>
+                <span>通勤方式</span>
+                <select name="mode" required>
+                  <option value="metro">地铁/公交</option>
+                  <option value="car">私家车</option>
+                  <option value="ebike">电动车</option>
+                  <option value="walk">步行/骑行</option>
+                </select>
+              </label>
+              <label>
+                <span>外卖/快递次数（次/月）</span>
+                <input name="deliveries" type="number" step="1" min="0" value="10" required />
+              </label>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" type="submit">计算</button>
+              <a href="co2-stats.html" class="btn btn-ghost" style="text-decoration: none; display: inline-flex; align-items: center;">查看统计</a>
+              <button class="btn btn-ghost" id="btnSaveSnapshot" type="button">保存到历史</button>
+              <button class="btn btn-ghost danger" id="btnClearHistory" type="button">清空历史</button>
+            </div>
+
+            <p class="muted small" id="calcHint"></p>
+          </form>
+        </section>
+
+        <section class="card">
+          <h3>结果</h3>
+          <div class="result-grid">
+            <div class="result">
+              <div class="result-label">总计</div>
+              <div class="result-num" id="rTotal">—</div>
+              <div class="result-unit">kg CO₂e / 月</div>
+            </div>
+            <div class="result">
+              <div class="result-label">用电</div>
+              <div class="result-num" id="rElec">—</div>
+              <div class="result-unit">kg CO₂e</div>
+            </div>
+            <div class="result">
+              <div class="result-label">通勤</div>
+              <div class="result-num" id="rCommute">—</div>
+              <div class="result-unit">kg CO₂e</div>
+            </div>
+            <div class="result">
+              <div class="result-label">外卖/快递</div>
+              <div class="result-num" id="rDelivery">—</div>
+              <div class="result-unit">kg CO₂e</div>
+            </div>
+          </div>
+
+          <hr class="sep" />
+          <h4>建议（按可执行）</h4>
+          <ul class="tips" id="tips"></ul>
+        </section>
+      </div>
+
+      <section class="section alt">
+        <div class="container tight">
+          <div class="section-head">
+            <h2>历史记录（本地）</h2>
+            <p class="muted">保存你的每月数据，做趋势对比（演示：最多保留 24 条）。</p>
+          </div>
+          <div class="card">
+            <div class="history" id="history"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container tight">
+          <div class="section-head">
+            <h2>绿色创新点</h2>
+            <p class="muted">探索各行业的绿色创新实践，点击了解详情</p>
+          </div>
+          
+          <!-- 绿色创新点图片展示 -->
+          <div class="innovation-images" style="margin-bottom: 2rem;">
+            <div class="grid-3">
+              <div class="card" style="padding: 0; overflow: hidden;">
+                <img src="https://picsum.photos/id/113/400/200" alt="绿色消费" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                  <h4 style="color: #2c7a7b;">🛍️ 绿色消费</h4>
+                  <p class="muted small">自带杯、循环包装、旧衣回收</p>
+                </div>
+              </div>
+              <div class="card" style="padding: 0; overflow: hidden;">
+                <img src="https://picsum.photos/id/114/400/200" alt="绿色出行" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                  <h4 style="color: #2c7a7b;">🚲 绿色出行</h4>
+                  <p class="muted small">共享单车、电动车、光伏换电</p>
+                </div>
+              </div>
+              <div class="card" style="padding: 0; overflow: hidden;">
+                <img src="https://picsum.photos/id/115/400/200" alt="数字化绿色" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                  <h4 style="color: #2c7a7b;">💚 数字化绿色</h4>
+                  <p class="muted small">碳账户、AI推荐、智能物流</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <!-- 消费/零售 -->
+            <div class="card">
+              <h3>消费/零售</h3>
+              <ul class="innovation-list">
+                <li class="innovation-item" onclick="showInnovationDetail('starbucks')">
+                  <strong>星巴克/瑞幸</strong>
+                  <p>自带杯减费+杯身回收计划；部分店用可重复使用杯租赁（押金+归还）</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('hema')">
+                  <strong>盒马/朴朴</strong>
+                  <p>循环配送箱+可降解袋；上线“绿色积分”，用回收箱/自带袋得积分换商品</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('uniqlo')">
+                  <strong>优衣库/无印</strong>
+                  <p>旧衣回收→再生纤维做新衣；门店设衣物修补站，延长寿命</p>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- 出行/居住 -->
+            <div class="card">
+              <h3>出行/居住</h3>
+              <ul class="innovation-list">
+                <li class="innovation-item" onclick="showInnovationDetail('bicycle')">
+                  <strong>共享单车/电动车</strong>
+                  <p>换电+电池回收；部分品牌用光伏换电站，骑行得碳积分</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('community')">
+                  <strong>绿色社区</strong>
+                  <p>光伏+储能+智慧电表；社区共享工具柜（梯子、电钻、露营装备）</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('greenpower')">
+                  <strong>绿电+绿算</strong>
+                  <p>青海“光伏+牧场”（光伏羊），绿电供算力中心，形成“绿电+绿算”生态</p>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- 数字化绿色系统 -->
+            <div class="card">
+              <h3>数字化绿色系统</h3>
+              <ul class="innovation-list">
+                <li class="innovation-item" onclick="showInnovationDetail('carbon')">
+                  <strong>碳账户/碳积分</strong>
+                  <p>支付宝蚂蚁森林、微信碳中和小程序；个人碳账本（出行、消费、垃圾分类自动算碳）</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('ai')">
+                  <strong>AI+绿色消费</strong>
+                  <p>智能推荐节能商品、计算家庭/个人碳足迹；一键碳抵消（买机票/外卖时加几元抵消碳排放）</p>
+                </li>
+                <li class="innovation-item" onclick="showInnovationDetail('logistics')">
+                  <strong>逆向物流数字化</strong>
+                  <p>快递“循环箱+扫码追踪”，平台自动结算押金、统计减排量</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="section">
+        <div class="container tight">
+          <div class="section-head">
+            <h2>关于 CO₂ 浓度（说明）</h2>
+            <p class="muted">
+              如果你想显示“实时 CO₂ 浓度（ppm）”，需要接传感器或接入第三方 API。
+              目前页面以“个人碳足迹（CO₂e）”为主。
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer">
+    <p class="muted small">GreenHub · CO₂</p>
+    <p class="muted small">排放因子可在 `assets/js/co2.js` 中修改。</p>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>
+    // 碳排放计算功能
+    (function() {
+      // 排放因子（kg CO2e/单位）
+      const factors = {
+        elec: 0.5703,      // 国网平均电力排放因子 kg CO2e/kWh
+        commute: {
+          metro: 0.041,    // 地铁 kg CO2e/km
+          car: 0.192,      // 私家车 kg CO2e/km
+          ebike: 0.022,    // 电动车 kg CO2e/km
+          walk: 0          // 步行/骑行 0
+        },
+        delivery: 0.5      // 外卖/快递 kg CO2e/次
+      };
+
+      // 获取DOM元素
+      const form = document.getElementById('footprintForm');
+      const rTotal = document.getElementById('rTotal');
+      const rElec = document.getElementById('rElec');
+      const rCommute = document.getElementById('rCommute');
+      const rDelivery = document.getElementById('rDelivery');
+      const tips = document.getElementById('tips');
+      const calcHint = document.getElementById('calcHint');
+      const historyDiv = document.getElementById('history');
+      const btnSaveSnapshot = document.getElementById('btnSaveSnapshot');
+      const btnClearHistory = document.getElementById('btnClearHistory');
+
+      // 计算碳排放
+      function calculateCarbon(formData) {
+        const kwh = parseFloat(formData.kwh) || 0;
+        const commuteKm = parseFloat(formData.commuteKm) || 0;
+        const mode = formData.mode;
+        const deliveries = parseInt(formData.deliveries) || 0;
+
+        // 计算各项排放
+        const elecEmission = kwh * factors.elec;
+        const commuteEmission = commuteKm * factors.commute[mode];
+        const deliveryEmission = deliveries * factors.delivery;
+        const total = elecEmission + commuteEmission + deliveryEmission;
+
+        return {
+          total: total.toFixed(1),
+          elec: elecEmission.toFixed(1),
+          commute: commuteEmission.toFixed(1),
+          delivery: deliveryEmission.toFixed(1),
+          inputs: { kwh, commuteKm, mode, deliveries }
+        };
+      }
+
+      // 更新结果显示
+      function updateResults(result) {
+        rTotal.textContent = result.total;
+        rElec.textContent = result.elec;
+        rCommute.textContent = result.commute;
+        rDelivery.textContent = result.delivery;
+
+        // 生成建议
+        const suggestions = [];
+        if (parseFloat(result.elec) > 50) {
+          suggestions.push('用电量较高，建议使用节能电器或调高空调温度');
+        }
+        if (parseFloat(result.commute) > 10 && result.inputs.mode === 'car') {
+          suggestions.push('私家车排放较高，建议尝试公共交通或合乘');
+        }
+        if (parseFloat(result.delivery) > 5) {
+          suggestions.push('外卖次数较多，建议减少一次性包装使用');
+        }
+        if (suggestions.length === 0) {
+          suggestions.push('恭喜！您的碳排放控制得很好，请继续保持！');
+        }
+
+        tips.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+      }
+
+      // 保存到历史记录
+      function saveToHistory(result) {
+        const history = JSON.parse(localStorage.getItem('gh:co2History') || '[]');
+        const record = {
+          date: new Date().toLocaleDateString('zh-CN'),
+          ...result.inputs,
+          total: result.total,
+          elec: result.elec,
+          commute: result.commute,
+          delivery: result.delivery
+        };
+        history.unshift(record);
+        // 最多保留24条
+        if (history.length > 24) history.pop();
+        localStorage.setItem('gh:co2History', JSON.stringify(history));
+        renderHistory();
+        calcHint.textContent = '✅ 已保存到历史记录！';
+        calcHint.style.color = '#52c41a';
+        
+        // 同步到统计页面数据
+        updateStatsData(history);
+      }
+
+      // 渲染历史记录
+      function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('gh:co2History') || '[]');
+        if (history.length === 0) {
+          historyDiv.innerHTML = '<p class="muted">暂无历史记录</p>';
+          return;
+        }
+
+        historyDiv.innerHTML = history.map((record, index) => `
+          <div class="history-item" style="padding: 1rem; border-bottom: 1px solid #eee; ${index === 0 ? 'background: #f0f9f9;' : ''}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong>${record.date}</strong>
+                <span class="muted small" style="margin-left: 1rem;">用电${record.kwh}kWh · 通勤${record.commuteKm}km</span>
+              </div>
+              <div style="text-align: right;">
+                <strong style="color: #2c7a7b; font-size: 1.2rem;">${record.total}</strong>
+                <span class="muted small"> kg CO₂e</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 更新统计页面数据
+      function updateStatsData(history) {
+        if (history.length === 0) return;
+        
+        // 计算统计数据
+        const totalEmission = history.reduce((sum, r) => sum + parseFloat(r.total), 0);
+        const avgMonthly = totalEmission / history.length;
+        
+        // 保存到localStorage供统计页面使用
+        const statsData = {
+          totalEmission: totalEmission.toFixed(0),
+          avgMonthly: avgMonthly.toFixed(0),
+          recordCount: history.length,
+          lastUpdate: new Date().toISOString()
+        };
+        localStorage.setItem('gh:co2Stats', JSON.stringify(statsData));
+      }
+
+      // 表单提交事件
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = {
+          kwh: form.kwh.value,
+          commuteKm: form.commuteKm.value,
+          mode: form.mode.value,
+          deliveries: form.deliveries.value
+        };
+        
+        const result = calculateCarbon(formData);
+        updateResults(result);
+        calcHint.textContent = '✅ 计算完成！点击"保存到历史"可以保存记录';
+        calcHint.style.color = '#2c7a7b';
+        
+        // 保存当前结果供后续保存
+        window.currentResult = result;
+      });
+
+      // 保存历史记录按钮
+      btnSaveSnapshot.addEventListener('click', function() {
+        if (window.currentResult) {
+          saveToHistory(window.currentResult);
+        } else {
+          calcHint.textContent = '请先点击"计算"按钮计算碳排放';
+          calcHint.style.color = '#ff9500';
+        }
+      });
+
+      // 清空历史记录
+      btnClearHistory.addEventListener('click', function() {
+        if (confirm('确定要清空所有历史记录吗？')) {
+          localStorage.removeItem('gh:co2History');
+          localStorage.removeItem('gh:co2Stats');
+          renderHistory();
+          calcHint.textContent = '已清空历史记录';
+          calcHint.style.color = '#666';
+        }
+      });
+
+      // 页面加载时渲染历史记录
+      renderHistory();
+
+      // 自动计算一次
+      const initialData = {
+        kwh: form.kwh.value,
+        commuteKm: form.commuteKm.value,
+        mode: form.mode.value,
+        deliveries: form.deliveries.value
+      };
+      const initialResult = calculateCarbon(initialData);
+      updateResults(initialResult);
+      window.currentResult = initialResult;
+    })();
+
+    // 移动端菜单切换
+    const btnBurger = document.getElementById('btnBurger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    btnBurger.addEventListener('click', () => {
+      const isHidden = mobileMenu.hasAttribute('hidden');
+      if (isHidden) {
+        mobileMenu.removeAttribute('hidden');
+        btnBurger.setAttribute('aria-expanded', 'true');
+      } else {
+        mobileMenu.setAttribute('hidden', '');
+        btnBurger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    
+    // 创新点详细信息
+    const innovationDetails = {
+      starbucks: {
+        title: '星巴克/瑞幸绿色实践',
+        content: '星巴克和瑞幸等咖啡连锁品牌推出了多项绿色举措：\n\n1. 自带杯减费：顾客自带杯子购买饮品可享受折扣，鼓励减少一次性杯子的使用。\n\n2. 杯身回收计划：设立专用回收箱，收集使用后的咖啡杯进行专业回收处理。\n\n3. 可重复使用杯租赁：部分门店推出杯子租赁服务，顾客支付押金后可租用杯子，归还后退还押金，进一步减少一次性杯子的使用。\n\n这些举措不仅减少了塑料污染，也提高了消费者的环保意识。'
+      },
+      hema: {
+        title: '盒马/朴朴绿色零售',
+        content: '盒马和朴朴等生鲜电商平台积极推进绿色零售：\n\n1. 循环配送箱：使用可重复使用的配送箱替代传统纸箱，减少包装浪费。\n\n2. 可降解袋：提供可降解塑料袋，降低对环境的影响。\n\n3. 绿色积分系统：推出"绿色积分"奖励计划，顾客使用回收箱或自带购物袋可获得积分，积分可兑换商品或优惠券。\n\n这些措施有效减少了零售环节的碳排放和包装浪费。'
+      },
+      uniqlo: {
+        title: '优衣库/无印绿色时尚',
+        content: '优衣库和无印良品等服装品牌致力于可持续时尚：\n\n1. 旧衣回收：在门店设立旧衣回收点，收集的旧衣物经过处理后转化为再生纤维，用于制作新服装。\n\n2. 衣物修补站：部分门店设立衣物修补服务，延长服装使用寿命，减少快时尚带来的浪费。\n\n3. 可持续材料：使用有机棉、再生纤维等环保材料制作服装，降低对环境的影响。\n\n这些举措推动了时尚行业向更加可持续的方向发展。'
+      },
+      bicycle: {
+        title: '共享单车/电动车绿色出行',
+        content: '共享单车和电动车行业积极推进绿色出行：\n\n1. 换电模式：采用电池换电模式，提高电池使用效率，减少充电时间。\n\n2. 电池回收：建立电池回收体系，对废旧电池进行专业处理，防止污染。\n\n3. 光伏换电站：部分品牌建设光伏换电站，利用太阳能为电池充电，进一步减少碳排放。\n\n4. 碳积分奖励：推出骑行得碳积分活动，鼓励用户选择绿色出行方式。\n\n这些措施有效促进了城市交通的绿色转型。'
+      },
+      community: {
+        title: '绿色社区建设',
+        content: '绿色社区建设正在成为城市发展的新趋势：\n\n1. 分布式能源：安装光伏系统和储能设备，实现社区能源自给自足。\n\n2. 智慧电表：使用智能电表实时监测能源使用情况，帮助居民优化能源消费。\n\n3. 社区共享工具柜：设立共享工具柜，提供梯子、电钻、露营装备等工具的共享使用，减少重复购买带来的资源浪费。\n\n4. 绿色建筑：采用绿色建筑标准，提高能源利用效率，改善居住环境。\n\n绿色社区不仅降低了居民的生活成本，也提高了生活质量。'
+      },
+      greenpower: {
+        title: '绿电+绿算生态',
+        content: '青海等地正在打造"绿电+绿算"生态系统：\n\n1. 光伏+牧场：在光伏板下养殖羊群（光伏羊），实现土地的复合利用，提高土地利用效率。\n\n2. 绿电供应：利用太阳能、风能等可再生能源发电，为算力中心提供绿色电力。\n\n3. 算力应用：将绿电用于人工智能、大数据等算力密集型应用，减少数字经济的碳足迹。\n\n4. 生态循环：形成"光伏发电→算力应用→数据服务"的绿色生态循环，推动经济高质量发展。\n\n这种模式为能源转型和数字经济发展提供了新的思路。'
+      },
+      carbon: {
+        title: '碳账户/碳积分系统',
+        content: '数字化碳管理系统正在成为个人环保行动的重要工具：\n\n1. 碳账户：支付宝蚂蚁森林、微信碳中和小程序等平台为用户建立个人碳账户，记录日常活动的碳排放。\n\n2. 自动算碳：通过智能识别出行方式、消费行为、垃圾分类等数据，自动计算个人碳足迹。\n\n3. 碳积分奖励：用户通过减少碳排放获得碳积分，积分可用于兑换商品、服务或参与环保项目。\n\n4. 社交激励：通过社交分享、排行榜等功能，激励用户积极参与低碳生活。\n\n这些系统有效提高了公众的环保意识和参与度。'
+      },
+      ai: {
+        title: 'AI+绿色消费',
+        content: '人工智能正在推动绿色消费的发展：\n\n1. 智能推荐：基于用户消费习惯和环保偏好，智能推荐节能、环保的商品。\n\n2. 碳足迹计算：利用AI技术精准计算家庭和个人的碳足迹，提供个性化的减排建议。\n\n3. 一键碳抵消：在购买机票、外卖等服务时，提供一键碳抵消选项，用户只需支付少量费用即可抵消相关碳排放。\n\n4. 绿色生活助手：开发智能绿色生活助手，帮助用户制定环保生活计划，跟踪减排进度。\n\nAI技术为绿色消费提供了更加便捷、个性化的解决方案。'
+      },
+      logistics: {
+        title: '逆向物流数字化',
+        content: '数字化技术正在革新逆向物流行业：\n\n1. 循环箱系统：推广使用可重复使用的快递循环箱，减少纸箱和塑料包装的使用。\n\n2. 扫码追踪：通过二维码等技术实现循环箱的全生命周期追踪，提高管理效率。\n\n3. 自动结算：平台自动结算押金、租赁费用等，简化用户操作流程。\n\n4. 减排统计：实时统计循环箱使用带来的减排量，为企业和用户提供环保数据。\n\n5. 逆向回收：建立数字化逆向回收体系，方便用户退回包装材料和旧商品。\n\n数字化逆向物流不仅减少了包装浪费，也提高了资源利用效率。'
+      }
+    };
+    
+    // 模态框功能
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle"></h3>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const modalElement = document.querySelector('.modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeBtn = document.querySelector('.close');
+    
+    function showInnovationDetail(id) {
+      const detail = innovationDetails[id];
+      if (detail) {
+        modalTitle.textContent = detail.title;
+        modalBody.innerHTML = detail.content.replace(/\\n/g, '<br>');
+        modalElement.style.display = 'block';
+      }
+    }
+    
+    closeBtn.addEventListener('click', () => {
+      modalElement.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (e) => {
+      if (e.target === modalElement) {
+        modalElement.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
+

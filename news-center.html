@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>新闻中心 | GreenHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    
+    /* 导航栏样式 - 与首页保持一致 */
+    .site-header {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    
+    /* 页面标题区域 */
+    .page-header {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1043/1920/400');
+      background-size: cover;
+      background-position: center;
+      padding: 120px 0 60px;
+      text-align: center;
+      color: white;
+      margin-top: 0;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .page-header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    /* 内容区域 */
+    .content-section {
+      padding: 60px 0;
+    }
+    
+    /* 分类标签 */
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .category-tab {
+      padding: 0.5rem 1.5rem;
+      border: 2px solid #2c7a7b;
+      background: white;
+      color: #2c7a7b;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .category-tab:hover,
+    .category-tab.active {
+      background: #2c7a7b;
+      color: white;
+    }
+    
+    /* 期刊卡片样式 - 类似自然保护动态简讯 */
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 2rem;
+    }
+    @media (max-width: 600px) {
+      .journal-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .journal-card {
+      display: flex;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .journal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .journal-cover {
+      width: 200px;
+      min-height: 280px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .journal-cover {
+        width: 150px;
+        min-height: 200px;
+      }
+    }
+    
+    .journal-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+    }
+    
+    .journal-header h3 {
+      font-size: 1.4rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    .journal-date {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .journal-desc {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    
+    .journal-desc::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 60px;
+      background: #2c7a7b;
+      float: left;
+      margin-right: 12px;
+    }
+    
+    .download-btn {
+      display: inline-block;
+      background: #2c7a7b;
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s ease;
+      align-self: flex-start;
+      border: none;
+      cursor: pointer;
+    }
+    .download-btn:hover {
+      background: #246a6b;
+    }
+    
+    /* 新闻列表样式 */
+    .news-list {
+      display: none;
+    }
+    .news-list.active {
+      display: block;
+    }
+    
+    .news-item {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    .news-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .news-thumb {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    
+    .news-content {
+      flex: 1;
+    }
+    
+    .news-content h4 {
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .news-meta {
+      color: #999;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .news-excerpt {
+      color: #666;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    .read-more {
+      color: #2c7a7b;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .read-more:hover {
+      text-decoration: underline;
+    }
+    
+    /* 页脚 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      .news-item {
+        flex-direction: column;
+      }
+      .news-thumb {
+        width: 100%;
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="about.html">关于我们</a>
+      <a href="login.html">登录</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 页面标题 -->
+<section class="page-header">
+  <div class="container">
+    <h1>新闻中心</h1>
+    <p>了解最新的环保动态、研究报告和资讯</p>
+  </div>
+</section>
+
+<!-- 内容区域 -->
+<section class="content-section">
+  <div class="container">
+    <!-- 分类标签 -->
+    <div class="category-tabs">
+      <button class="category-tab active" data-category="journals">环保简讯</button>
+      <button class="category-tab" data-category="news">环保新闻</button>
+      <button class="category-tab" data-category="reports">研究报告</button>
+    </div>
+    
+    <!-- 环保简讯 - 类似自然保护动态简讯风格 -->
+    <div class="journals-section" id="journals-section">
+      <div class="journal-grid">
+        <!-- 简讯卡片 1 -->
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/200/400/560" alt="环保动态简讯封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>环保动态简讯<br>（总第8期）</h3>
+              </div>
+              <div class="journal-date">2026/02/26</div>
+              <div class="journal-desc">
+                GreenHub聚焦国内外气候变化和可持续发展领域的研究进展、政策与行业动态，发布环保动态简讯，为环境研究者和实践者提供信息参考。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadJournal('环保动态简讯第8期')">下载</button>
+          </div>
+        </div>
+        
+        <!-- 简讯卡片 2 -->
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/201/400/560" alt="环保动态简讯封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>环保动态简讯<br>（总第7期）</h3>
+              </div>
+              <div class="journal-date">2026/01/15</div>
+              <div class="journal-desc">
+                本期关注全球碳中和目标进展、可再生能源技术突破以及中国生态文明建设的最新成果，为读者呈现环保领域的前沿动态。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadJournal('环保动态简讯第7期')">下载</button>
+          </div>
+        </div>
+        
+        <!-- 简讯卡片 3 -->
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/202/400/560" alt="环保动态简讯封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>环保动态简讯<br>（总第6期）</h3>
+              </div>
+              <div class="journal-date">2025/12/20</div>
+              <div class="journal-desc">
+                聚焦生物多样性保护议题，涵盖COP16大会成果、国家公园体系建设进展以及濒危物种保护成功案例等热点内容。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadJournal('环保动态简讯第6期')">下载</button>
+          </div>
+        </div>
+        
+        <!-- 简讯卡片 4 -->
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/203/400/560" alt="环保动态简讯封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>环保动态简讯<br>（总第5期）</h3>
+              </div>
+              <div class="journal-date">2025/11/28</div>
+              <div class="journal-desc">
+                本期深入分析海洋生态保护现状，探讨海洋塑料污染治理方案，并介绍全球海洋保护区建设的最新进展与挑战。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadJournal('环保动态简讯第5期')">下载</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 环保新闻 - 期刊卡片风格 -->
+    <div class="news-list" id="news-list">
+      <div class="journal-grid">
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1015/400/560" alt="新闻配图" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>全球气候峰会取得重要进展</h3>
+              </div>
+              <div class="journal-date">2026/02/20 | 国际新闻</div>
+              <div class="journal-desc">
+                最新气候峰会达成多项协议，各国承诺加快减排步伐，推动可再生能源发展。中国提出新的碳达峰时间表，展现负责任大国担当。
+              </div>
+            </div>
+            <button class="download-btn" onclick="readNews('全球气候峰会取得重要进展')">阅读更多</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1025/400/560" alt="新闻配图" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>GreenHub启动全国环保志愿活动</h3>
+              </div>
+              <div class="journal-date">2026/02/15 | 机构动态</div>
+              <div class="journal-desc">
+                我们将在全国范围内开展环保志愿活动，号召更多人加入到环境保护的行列中来。活动将覆盖50个城市，预计招募10万名志愿者。
+              </div>
+            </div>
+            <button class="download-btn" onclick="readNews('GreenHub启动全国环保志愿活动')">阅读更多</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1035/400/560" alt="新闻配图" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>可再生能源使用比例创新高</h3>
+              </div>
+              <div class="journal-date">2026/02/10 | 行业资讯</div>
+              <div class="journal-desc">
+                最新数据显示，全球可再生能源使用比例达到历史新高，为应对气候变化提供了新希望。太阳能和风能增长最为显著，成本持续下降。
+              </div>
+            </div>
+            <button class="download-btn" onclick="readNews('可再生能源使用比例创新高')">阅读更多</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1043/400/560" alt="新闻配图" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>长江流域生态保护成效显著</h3>
+              </div>
+              <div class="journal-date">2026/02/05 | 国内新闻</div>
+              <div class="journal-desc">
+                经过五年努力，长江流域生态环境明显改善，江豚数量回升，水质优良比例达到90%以上，生态修复工程取得阶段性成果。
+              </div>
+            </div>
+            <button class="download-btn" onclick="readNews('长江流域生态保护成效显著')">阅读更多</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 研究报告 - 期刊卡片风格 -->
+    <div class="news-list" id="reports-list">
+      <div class="journal-grid">
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1068/400/560" alt="报告封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>2025年中国碳排放报告</h3>
+              </div>
+              <div class="journal-date">2026/01 | 年度报告</div>
+              <div class="journal-desc">
+                本报告全面分析中国各行业碳排放现状、减排进展及未来趋势，为政策制定和企业决策提供数据支撑和参考建议。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadReport('2025年中国碳排放报告')">下载报告</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1071/400/560" alt="报告封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>城市垃圾分类实施效果评估</h3>
+              </div>
+              <div class="journal-date">2025/12 | 专题研究</div>
+              <div class="journal-desc">
+                对全国46个重点城市垃圾分类政策实施效果进行评估，分析成功经验与存在问题，提出改进建议和最佳实践。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadReport('城市垃圾分类实施效果评估')">下载报告</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1069/400/560" alt="报告封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>中国生物多样性保护白皮书</h3>
+              </div>
+              <div class="journal-date">2025/11 | 政策研究</div>
+              <div class="journal-desc">
+                系统梳理中国生物多样性保护的政策体系、保护措施和典型案例，展示生态文明建设成就和未来规划。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadReport('中国生物多样性保护白皮书')">下载报告</button>
+          </div>
+        </div>
+        
+        <div class="journal-card">
+          <img src="https://picsum.photos/id/1072/400/560" alt="报告封面" class="journal-cover">
+          <div class="journal-content">
+            <div>
+              <div class="journal-header">
+                <h3>海洋塑料污染治理策略研究</h3>
+              </div>
+              <div class="journal-date">2025/10 | 专题研究</div>
+              <div class="journal-desc">
+                深入分析全球海洋塑料污染现状，探讨源头减量、回收处理和替代材料等治理策略，提出系统性解决方案。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadReport('海洋塑料污染治理策略研究')">下载报告</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="about.html">关于我们</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>© 2026 GreenHub。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 分类切换功能
+  const tabs = document.querySelectorAll('.category-tab');
+  const journalsSection = document.getElementById('journals-section');
+  const newsList = document.getElementById('news-list');
+  const reportsList = document.getElementById('reports-list');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      // 更新标签状态
+      tabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      
+      // 显示对应内容
+      const category = this.getAttribute('data-category');
+      journalsSection.style.display = category === 'journals' ? 'block' : 'none';
+      newsList.classList.toggle('active', category === 'news');
+      reportsList.classList.toggle('active', category === 'reports');
+    });
+  });
+  
+  // 下载简讯功能
+  function downloadJournal(journalName) {
+    alert(`正在下载：${journalName}\n\n（演示功能：实际项目中这里会下载PDF文件）`);
+  }
+  
+  // 阅读新闻功能
+  function readNews(newsTitle) {
+    alert(`正在打开：${newsTitle}\n\n（演示功能：实际项目中这里会跳转到新闻详情页）`);
+  }
+  
+  // 下载报告功能
+  function downloadReport(reportName) {
+    alert(`正在下载：${reportName}\n\n（演示功能：实际项目中这里会下载PDF报告）`);
+  }
+</script>
+</body>
+</html>

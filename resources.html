@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>资源分享 | GreenHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f5f5f5;
+    }
+    
+    /* 导航栏样式 - 与首页保持一致 */
+    .site-header {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    
+    /* 页面标题区域 */
+    .page-header {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1068/1920/400');
+      background-size: cover;
+      background-position: center;
+      padding: 120px 0 60px;
+      text-align: center;
+      color: white;
+      margin-top: 0;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .page-header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+    
+    /* 内容区域 */
+    .content-section {
+      padding: 60px 0;
+    }
+    
+    /* 分类标签 */
+    .category-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    .category-tab {
+      padding: 0.5rem 1.5rem;
+      border: 2px solid #2c7a7b;
+      background: white;
+      color: #2c7a7b;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .category-tab:hover,
+    .category-tab.active {
+      background: #2c7a7b;
+      color: white;
+    }
+    
+    /* 资源卡片样式 - 期刊卡片风格 */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 2rem;
+    }
+    @media (max-width: 600px) {
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .resource-card {
+      display: flex;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .resource-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    
+    .resource-cover {
+      width: 200px;
+      min-height: 280px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .resource-cover {
+        width: 150px;
+        min-height: 200px;
+      }
+    }
+    
+    .resource-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+    }
+    
+    .resource-header h3 {
+      font-size: 1.4rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    .resource-type {
+      display: inline-block;
+      background: #e6f4f4;
+      color: #2c7a7b;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .resource-date {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .resource-desc {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    
+    .resource-desc::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 60px;
+      background: #2c7a7b;
+      float: left;
+      margin-right: 12px;
+    }
+    
+    .download-btn {
+      display: inline-block;
+      background: #2c7a7b;
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s ease;
+      align-self: flex-start;
+      border: none;
+      cursor: pointer;
+    }
+    .download-btn:hover {
+      background: #246a6b;
+    }
+    
+    /* 资源列表 */
+    .resource-list {
+      display: none;
+    }
+    .resource-list.active {
+      display: block;
+    }
+    
+    /* 页脚 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .page-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="about.html">关于我们</a>
+      <a href="login.html">登录</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 页面标题 -->
+<section class="page-header">
+  <div class="container">
+    <h1>资源分享</h1>
+    <p>获取环保相关的资料、工具和研究报告</p>
+  </div>
+</section>
+
+<!-- 内容区域 -->
+<section class="content-section">
+  <div class="container">
+    <!-- 分类标签 -->
+    <div class="category-tabs">
+      <button class="category-tab active" data-category="guides">环保指南</button>
+      <button class="category-tab" data-category="education">教育材料</button>
+      <button class="category-tab" data-category="reports">研究报告</button>
+    </div>
+    
+    <!-- 环保指南 -->
+    <div class="resource-list active" id="guides-list">
+      <div class="resource-grid">
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1068/400/560" alt="垃圾分类指南" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>垃圾分类完全指南</h3>
+              </div>
+              <span class="resource-type">实用指南</span>
+              <div class="resource-date">2026/02/20</div>
+              <div class="resource-desc">
+                详细介绍垃圾分类的标准、方法和注意事项，包含常见垃圾分类查询表，帮助您轻松掌握垃圾分类技巧，为环保贡献力量。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('垃圾分类完全指南')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1070/400/560" alt="节能减碳指南" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>家庭节能减碳手册</h3>
+              </div>
+              <span class="resource-type">实用指南</span>
+              <div class="resource-date">2026/01/15</div>
+              <div class="resource-desc">
+                提供50个实用的家庭节能小技巧，涵盖用电、用水、出行等方面，帮助您减少碳足迹，降低能源消耗，节省开支。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('家庭节能减碳手册')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1073/400/560" alt="绿色生活指南" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>绿色生活实践指南</h3>
+              </div>
+              <span class="resource-type">实用指南</span>
+              <div class="resource-date">2025/12/10</div>
+              <div class="resource-desc">
+                从衣食住行四个方面介绍绿色生活方式，包含环保产品推荐、可持续消费指南和低碳生活技巧。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('绿色生活实践指南')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1074/400/560" alt="零废弃指南" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>零废弃生活入门指南</h3>
+              </div>
+              <span class="resource-type">实用指南</span>
+              <div class="resource-date">2025/11/20</div>
+              <div class="resource-desc">
+                介绍零废弃生活理念和实践方法，包含DIY环保产品制作教程、包装减量技巧和废弃物再利用创意。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('零废弃生活入门指南')">下载资源</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 教育材料 -->
+    <div class="resource-list" id="education-list">
+      <div class="resource-grid">
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1071/400/560" alt="环保课件" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>小学环保教育课件</h3>
+              </div>
+              <span class="resource-type">教育材料</span>
+              <div class="resource-date">2026/02/01</div>
+              <div class="resource-desc">
+                专为小学生设计的环保教育课件，包含PPT、教案和互动游戏，内容生动有趣，帮助孩子建立环保意识。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('小学环保教育课件')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1075/400/560" alt="环保视频" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>环保科普视频合集</h3>
+              </div>
+              <span class="resource-type">教育材料</span>
+              <div class="resource-date">2026/01/10</div>
+              <div class="resource-desc">
+                精选20个环保主题科普视频，涵盖气候变化、生物多样性、污染治理等话题，适合课堂播放和社区宣传。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('环保科普视频合集')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1076/400/560" alt="互动活动" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>社区环保活动方案</h3>
+              </div>
+              <span class="resource-type">教育材料</span>
+              <div class="resource-date">2025/12/15</div>
+              <div class="resource-desc">
+                提供10套完整的社区环保活动方案，包含活动流程、物料清单和宣传模板，帮助社区组织者轻松开展环保活动。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('社区环保活动方案')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1077/400/560" alt="绘本故事" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>环保绘本故事集</h3>
+              </div>
+              <span class="resource-type">教育材料</span>
+              <div class="resource-date">2025/11/25</div>
+              <div class="resource-desc">
+                包含10个原创环保主题绘本故事，图文并茂，适合3-8岁儿童阅读，培养孩子的环保意识和责任感。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('环保绘本故事集')">下载资源</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 研究报告 -->
+    <div class="resource-list" id="reports-list">
+      <div class="resource-grid">
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1069/400/560" alt="环境报告" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>2025年中国环境状况报告</h3>
+              </div>
+              <span class="resource-type">研究报告</span>
+              <div class="resource-date">2026/01/20</div>
+              <div class="resource-desc">
+                全面分析中国大气、水、土壤环境状况，评估环境治理成效，展望未来发展趋势，为环保决策提供数据支撑。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('2025年中国环境状况报告')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1078/400/560" alt="可持续发展报告" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>可持续发展目标进展报告</h3>
+              </div>
+              <span class="resource-type">研究报告</span>
+              <div class="resource-date">2025/12/20</div>
+              <div class="resource-desc">
+                跟踪分析联合国可持续发展目标在中国的落实情况，评估各项目标完成进度，分享成功案例和经验。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('可持续发展目标进展报告')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1079/400/560" alt="行业报告" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>绿色产业发展趋势报告</h3>
+              </div>
+              <span class="resource-type">研究报告</span>
+              <div class="resource-date">2025/11/30</div>
+              <div class="resource-desc">
+                深入分析清洁能源、环保技术、循环经济等绿色产业的发展现状和未来趋势，为投资者和企业提供参考。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('绿色产业发展趋势报告')">下载资源</button>
+          </div>
+        </div>
+        
+        <div class="resource-card">
+          <img src="https://picsum.photos/id/1080/400/560" alt="政策报告" class="resource-cover">
+          <div class="resource-content">
+            <div>
+              <div class="resource-header">
+                <h3>环保政策法规汇编</h3>
+              </div>
+              <span class="resource-type">研究报告</span>
+              <div class="resource-date">2025/10/15</div>
+              <div class="resource-desc">
+                系统整理近年来国家发布的环保政策法规，包含政策解读和实施指南，帮助企业和个人了解环保合规要求。
+              </div>
+            </div>
+            <button class="download-btn" onclick="downloadResource('环保政策法规汇编')">下载资源</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="about.html">关于我们</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>© 2026 GreenHub。</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 分类切换功能
+  const tabs = document.querySelectorAll('.category-tab');
+  const guidesList = document.getElementById('guides-list');
+  const educationList = document.getElementById('education-list');
+  const reportsList = document.getElementById('reports-list');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      // 更新标签状态
+      tabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      
+      // 显示对应内容
+      const category = this.getAttribute('data-category');
+      guidesList.classList.toggle('active', category === 'guides');
+      educationList.classList.toggle('active', category === 'education');
+      reportsList.classList.toggle('active', category === 'reports');
+    });
+  });
+  
+  // 下载资源功能
+  function downloadResource(resourceName) {
+    alert(`正在下载：${resourceName}\n\n（演示功能：实际项目中这里会下载PDF或其他格式文件）`);
+  }
+</script>
+</body>
+</html>

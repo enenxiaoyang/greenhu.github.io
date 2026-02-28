@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GreenHub | 环保行动平台</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#fafafa">
+  <style>
+    /* 全局样式调整 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    
+    /* 英雄区域样式 - 宇宙地球背景 */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/id/1048/1920/1080');
+      background-size: cover;
+      background-position: center;
+      animation: backgroundMove 20s linear infinite;
+      z-index: -1;
+    }
+    @keyframes backgroundMove {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+    .hero-content {
+      text-align: center;
+      color: white;
+      max-width: 800px;
+      padding: 0 2rem;
+    }
+    .hero-title {
+      font-size: 4rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+    .hero-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .hero-btn {
+      display: inline-block;
+      background: rgba(44, 122, 123, 0.9);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+    .hero-btn:hover {
+      background: #246a6b;
+      transform: translateY(-2px);
+    }
+    
+    /* 统计数据区域 */
+    .stats-section {
+      background: #f8f9fa;
+      padding: 4rem 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+    .stat-item {
+      padding: 2rem;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #2c7a7b;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      color: #666;
+      font-size: 1rem;
+    }
+    
+    /* 议题区域样式 */
+    .section {
+      padding: 4rem 0;
+    }
+    .section-head {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-head h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+    }
+    .section-head p {
+      font-size: 1.1rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .card-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 1.5rem;
+    }
+    .card-content h3 {
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+      font-size: 1.3rem;
+    }
+    .card-content p {
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    /* 团队图片区域 */
+    .team-section {
+      background: #f8f9fa;
+      padding: 4rem 0;
+    }
+    .team-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* 页脚样式 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .hero-subtitle {
+        font-size: 1.2rem;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a class="active" href="index.html">首页</a>
+      <a href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="about.html">关于我们</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="login.html">加入我们</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">行动带来改变</h1>
+      <p class="hero-subtitle">我们以实际行动推进积极改变，保护地球环境与自然生态</p>
+      <a href="projects.html" class="hero-btn">开始探索 →</a>
+    </div>
+  </section>
+
+  <!-- 统计数据区域 -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">64+</div>
+          <div class="stat-label">环保公益项目</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1000+</div>
+          <div class="stat-label">年度活动场次</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">23</div>
+          <div class="stat-label">各地小组</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100000+</div>
+          <div class="stat-label">参与人数</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 团队图片区域 -->
+  <section class="team-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>我们的团队</h2>
+        <p>一群致力于环境保护的志愿者和专业人士</p>
+      </div>
+      <img src="https://picsum.photos/id/1059/1920/1080" alt="我们的团队" class="team-image">
+    </div>
+  </section>
+
+  <!-- 议题区域 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>我们持续关注本土及全球环境议题</h2>
+        <p>以不同项目推动实际改变</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <img src="https://picsum.photos/id/1043/1920/1080" alt="气候与能源" class="card-img">
+          <div class="card-content">
+            <h3>气候与能源</h3>
+            <p>气候变化是人类面临的最大环境威胁。我们推动中国摆脱煤炭的过渡，促进可再生能源的发展，减少碳排放，应对全球气候危机。</p>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1039/1920/1080" alt="保护生物多样性" class="card-img">
+          <div class="card-content">
+            <h3>保护生物多样性</h3>
+            <p>致力于保存、守护与修复地球上最宝贵的生态系统，包括森林和海洋，帮助人类对抗气候危机，维护生态平衡。</p>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1060/1920/1080" alt="可持续生活" class="card-img">
+          <div class="card-content">
+            <h3>可持续生活</h3>
+            <p>探索如何在尊重自然资源与生态阈值的限度之内，实现可持续生产、有度消费，重新定义美好生活，构建绿色未来。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 新闻中心 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>新闻中心</h2>
+        <p>了解最新的环保动态和我们的活动</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <img src="https://picsum.photos/id/1015/1920/1080" alt="环保新闻" class="card-img">
+          <div class="card-content">
+            <h3>全球气候峰会取得重要进展</h3>
+            <p class="muted small">2026年2月20日</p>
+            <p>最新气候峰会达成多项协议，各国承诺加快减排步伐，推动可再生能源发展。</p>
+            <a href="news-center.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">阅读更多 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1025/1920/1080" alt="环保新闻" class="card-img">
+          <div class="card-content">
+            <h3>GreenHub启动全国环保志愿活动</h3>
+            <p class="muted small">2026年2月15日</p>
+            <p>我们将在全国范围内开展环保志愿活动，号召更多人加入到环境保护的行列中来。</p>
+            <a href="news-center.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">阅读更多 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1035/1920/1080" alt="环保新闻" class="card-img">
+          <div class="card-content">
+            <h3>可再生能源使用比例创新高</h3>
+            <p class="muted small">2026年2月10日</p>
+            <p>最新数据显示，全球可再生能源使用比例达到历史新高，为应对气候变化提供了新希望。</p>
+            <a href="news-center.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">阅读更多 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 资源分享 -->
+  <section class="section" style="background: #f8f9fa;">
+    <div class="container">
+      <div class="section-head">
+        <h2>资源分享</h2>
+        <p>获取环保相关的资料和工具</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <img src="https://picsum.photos/id/1068/1920/1080" alt="环保资源" class="card-img">
+          <div class="card-content">
+            <h3>环保指南</h3>
+            <p>包含垃圾分类、节能减碳、绿色生活等方面的实用指南，帮助你在日常生活中践行环保理念。</p>
+            <a href="resources.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">下载资源 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1071/1920/1080" alt="环保资源" class="card-img">
+          <div class="card-content">
+            <h3>教育材料</h3>
+            <p>为学校和社区提供的环保教育材料，包括课件、视频和互动活动，适合不同年龄段的学习者。</p>
+            <a href="resources.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">下载资源 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1069/1920/1080" alt="环保资源" class="card-img">
+          <div class="card-content">
+            <h3>研究报告</h3>
+            <p>最新的环保研究报告和数据分析，帮助你了解环境状况和可持续发展的最新趋势。</p>
+            <a href="resources.html" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">下载资源 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作机会 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>工作机会</h2>
+        <p>加入我们，一起为环保事业贡献力量</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <img src="https://picsum.photos/id/1018/1920/1080" alt="环保项目协调员" class="card-img">
+          <div class="card-content">
+            <h3>环保项目协调员</h3>
+            <p class="muted small">全职 | 北京</p>
+            <p>负责策划和执行环保项目，协调志愿者和合作伙伴，推动项目顺利进行。</p>
+            <a href="#" class="apply-job-link" data-job="环保项目协调员" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">申请职位 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1024/1920/1080" alt="传播专员" class="card-img">
+          <div class="card-content">
+            <h3>传播专员</h3>
+            <p class="muted small">全职 | 上海</p>
+            <p>负责机构的品牌推广和媒体关系，制定传播策略，提高公众环保意识。</p>
+            <a href="#" class="apply-job-link" data-job="传播专员" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">申请职位 →</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/id/1048/1920/1080" alt="志愿者招募" class="card-img">
+          <div class="card-content">
+            <h3>志愿者招募</h3>
+            <p class="muted small">兼职 | 全国</p>
+            <p>我们长期招募环保志愿者，参与各类环保活动和项目，共同为环境事业努力。</p>
+            <a href="#" class="apply-job-link" data-job="志愿者" style="display: inline-block; margin-top: 1rem; color: #2c7a7b; font-weight: 500;">加入我们 →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="about.html">关于我们</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 环保行动平台</p>
+      <p>© 2026 GreenHub。</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+  // 检查登录状态并处理职位申请
+  document.querySelectorAll('.apply-job-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const jobName = this.getAttribute('data-job');
+      const currentUser = localStorage.getItem('gh:currentUser');
+      
+      if (currentUser) {
+        // 已登录，直接跳转到申请页面
+        window.location.href = `job-application.html?job=${encodeURIComponent(jobName)}`;
+      } else {
+        // 未登录，保存目标职位到 sessionStorage，然后跳转到注册页面
+        sessionStorage.setItem('gh:targetJob', jobName);
+        alert('请先注册/登录后再申请职位');
+        window.location.href = 'register.html';
+      }
+    });
+  });
+</script>
+
+<!-- AI 聊天助手组件 -->
+<div id="ai-chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+  <!-- 聊天按钮 -->
+  <button id="chat-toggle-btn" style="width: 60px; height: 60px; border-radius: 50%; background: #2c7a7b; color: white; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-size: 24px; transition: all 0.3s ease;">
+    💬
+  </button>
+  
+  <!-- 聊天窗口 -->
+  <div id="chat-window" style="display: none; position: absolute; bottom: 70px; right: 0; width: 350px; height: 500px; background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow: hidden; flex-direction: column;">
+    <!-- 聊天头部 -->
+    <div style="background: #2c7a7b; color: white; padding: 15px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 24px;">🌱</span>
+        <div>
+          <div style="font-weight: bold;">GreenHub 助手</div>
+          <div style="font-size: 12px; opacity: 0.9;">AI 智能助手</div>
+        </div>
+      </div>
+      <button id="chat-close-btn" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
+    </div>
+    
+    <!-- 聊天内容区 -->
+    <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 15px; background: #f5f5f5;">
+      <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <span style="font-size: 24px;">🌱</span>
+        <div style="background: white; padding: 12px; border-radius: 12px; max-width: 80%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <p style="margin: 0;">你好！我是 GreenHub 的 AI 助手。我可以帮你：</p>
+          <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 14px;">
+            <li>了解环保项目和活动</li>
+            <li>解答岗位申请相关问题</li>
+            <li>提供环保知识咨询</li>
+            <li>协助使用平台功能</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 输入区 -->
+    <div style="padding: 15px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px;">
+      <input type="text" id="chat-input" placeholder="输入您的问题..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none;">
+      <button id="chat-send-btn" style="background: #2c7a7b; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px;">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // AI 聊天助手功能
+  (function() {
+    const chatWidget = document.getElementById('ai-chat-widget');
+    const chatToggleBtn = document.getElementById('chat-toggle-btn');
+    const chatWindow = document.getElementById('chat-window');
+    const chatCloseBtn = document.getElementById('chat-close-btn');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    
+    let isOpen = false;
+    
+    // 切换聊天窗口
+    chatToggleBtn.addEventListener('click', function() {
+      isOpen = !isOpen;
+      chatWindow.style.display = isOpen ? 'flex' : 'none';
+      chatToggleBtn.textContent = isOpen ? '✕' : '💬';
+    });
+    
+    chatCloseBtn.addEventListener('click', function() {
+      isOpen = false;
+      chatWindow.style.display = 'none';
+      chatToggleBtn.textContent = '💬';
+    });
+    
+    // 添加消息到聊天窗口
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.style.cssText = `display: flex; gap: 10px; margin-bottom: 15px; ${isUser ? 'flex-direction: row-reverse;' : ''}`;
+      
+      const avatar = isUser ? '👤' : '🌱';
+      const bgColor = isUser ? '#2c7a7b' : 'white';
+      const textColor = isUser ? 'white' : '#333';
+      
+      messageDiv.innerHTML = `
+        <span style="font-size: 24px;">${avatar}</span>
+        <div style="background: ${bgColor}; color: ${textColor}; padding: 12px; border-radius: 12px; max-width: 80%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <p style="margin: 0;">${content}</p>
+        </div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // 模拟 AI 回复
+    function getAIResponse(userMessage) {
+      const lowerMsg = userMessage.toLowerCase();
+      
+      if (lowerMsg.includes('岗位') || lowerMsg.includes('职位') || lowerMsg.includes('工作') || lowerMsg.includes('申请')) {
+        return '我们目前有多个岗位开放：\n• 环保项目协调员（全职 | 北京）\n• 传播专员（全职 | 上海）\n• 志愿者（兼职 | 全国）\n\n点击职位卡片上的"申请职位"按钮即可申请。如果您还没有注册，系统会引导您先完成注册。';
+      } else if (lowerMsg.includes('注册') || lowerMsg.includes('登录') || lowerMsg.includes('账号')) {
+        return '您可以通过点击页面右上角的"加入我们"或"登录"按钮进行注册/登录。注册非常简单，只需要提供姓名、邮箱和密码即可。';
+      } else if (lowerMsg.includes('项目') || lowerMsg.includes('活动')) {
+        return 'GreenHub 开展多种环保项目：\n• 气候与能源项目\n• 生物多样性保护\n• 可持续生活推广\n• 废品回收与买卖\n\n您可以访问"行动/项目"页面了解更多详情。';
+      } else if (lowerMsg.includes('环保') || lowerMsg.includes('绿色') || lowerMsg.includes('碳')) {
+        return '环保从小事做起！您可以：\n• 减少一次性塑料使用\n• 选择公共交通或骑行\n• 做好垃圾分类\n• 参与我们的环保活动\n\n我们还可以帮您计算碳足迹，访问 CO₂/碳足迹页面了解更多。';
+      } else if (lowerMsg.includes('你好') || lowerMsg.includes('嗨') || lowerMsg.includes('hello')) {
+        return '你好！很高兴为您服务 😊 有什么我可以帮您的吗？';
+      } else if (lowerMsg.includes('谢谢') || lowerMsg.includes('感谢')) {
+        return '不客气！很高兴能帮到您。如果还有其他问题，随时问我哦！🌱';
+      } else {
+        return '感谢您的提问！我是 GreenHub 的 AI 助手，专门帮助您了解我们的环保项目、岗位申请和平台功能。您可以问我关于：\n• 岗位申请流程\n• 环保项目信息\n• 平台使用方法\n• 环保小知识\n\n请问有什么具体想了解的吗？';
+      }
+    }
+    
+    // 发送消息
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+      
+      // 添加用户消息
+      addMessage(message, true);
+      chatInput.value = '';
+      
+      // 模拟 AI 思考并回复
+      setTimeout(() => {
+        const response = getAIResponse(message);
+        addMessage(response.replace(/\n/g, '<br>'));
+      }, 500 + Math.random() * 500);
+    }
+    
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>行动/项目 | GreenHub</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* 全局样式调整 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* 导航栏样式 */
+    .site-header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #2c7a7b;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .brand-mark {
+      background: #2c7a7b;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #2c7a7b;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #2c7a7b;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #246a6b;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+    .btn-ghost:hover {
+      background: #f5f5f5;
+    }
+    
+    /* 英雄区域样式 */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://picsum.photos/id/1015/1920/1080');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* 页面内容样式 */
+    .section {
+      padding: 4rem 0;
+    }
+    .section-head {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-head h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+    }
+    .section-head h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #2c7a7b;
+    }
+    .section-head p {
+      font-size: 1.1rem;
+      color: #666;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* 项目卡片样式 */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .project-cover {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .cover-1 {
+      background: linear-gradient(135deg, rgba(44, 122, 123, 0.8), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1039/1920/1080');
+      background-size: cover;
+      background-position: center;
+    }
+    .cover-2 {
+      background: linear-gradient(135deg, rgba(44, 122, 123, 0.8), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1043/1920/1080');
+      background-size: cover;
+      background-position: center;
+    }
+    .cover-3 {
+      background: linear-gradient(135deg, rgba(44, 122, 123, 0.8), rgba(0,0,0,0.6)), url('https://picsum.photos/id/1060/1920/1080');
+      background-size: cover;
+      background-position: center;
+    }
+    .project {
+      padding: 1.5rem;
+    }
+    .project h3 {
+      margin-bottom: 1rem;
+      color: #333;
+      font-size: 1.3rem;
+    }
+    .project p {
+      color: #666;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: #f0f0f0;
+      color: #666;
+      border: 1px solid #e0e0e0;
+    }
+    
+    /* 时间线样式 */
+    .timeline-section {
+      background: #f8f9fa;
+      padding: 4rem 0;
+      margin-top: 4rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #2c7a7b;
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+    }
+    .tl-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .tl-dot {
+      position: absolute;
+      left: -0.5rem;
+      top: 0.5rem;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: #2c7a7b;
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px #2c7a7b;
+      z-index: 1;
+    }
+    .tl-body {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+    .tl-image {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tl-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tl-content {
+      flex: 1;
+    }
+    .tl-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    .muted {
+      color: #666;
+    }
+    .small {
+      font-size: 0.875rem;
+    }
+    
+    /* 页脚样式 */
+    .site-footer {
+      background: #333;
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .section-head h1 {
+        font-size: 2rem;
+      }
+      .section-head h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="../index.html"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html">首页</a>
+      <a class="active" href="projects.html">行动/项目</a>
+      <a href="marketplace.html">废品买卖</a>
+      <a href="co2.html">CO₂/碳足迹</a>
+      <a href="login.html">登录</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="login.html">加入我们</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="container">
+      <h1>我的行动正在发生</h1>
+      <p>把你的环保行动当成作品集：项目、成果、时间线、参与方式</p>
+      
+    </div>
+  </section>
+
+  <!-- 项目卡片区域 -->
+  <div class="section">
+    <div class="container">
+      <div class="grid-3">
+        <div class="card">
+          <div class="project-cover cover-1" aria-hidden="true"></div>
+          <div class="project">
+            <h3>社区垃圾分类宣传</h3>
+            <p class="muted">制作分类海报与投放点引导；每周一次社区志愿，提高居民环保意识，促进垃圾分类习惯的养成。</p>
+            <div class="pill-row">
+              <span class="pill">志愿</span>
+              <span class="pill">社区</span>
+              <span class="pill">分类</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <a class="btn btn-ghost" href="marketplace.html">把闲置发布出去</a>
+              <button class="btn btn-ghost" onclick="shareProject(1)">分享项目</button>
+              <button class="btn btn-ghost" onclick="openProjectChat(1)">交流监督</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="project-cover cover-2" aria-hidden="true"></div>
+          <div class="project">
+            <h3>旧物循环计划</h3>
+            <p class="muted">建立“收/出”清单，减少闲置堆积，提高二次利用率，让资源得到更合理的分配和利用。</p>
+            <div class="pill-row">
+              <span class="pill">循环</span>
+              <span class="pill">二手</span>
+              <span class="pill">减碳</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <a class="btn btn-ghost" href="co2.html">量化我的减排</a>
+              <button class="btn btn-ghost" onclick="shareProject(2)">分享项目</button>
+              <button class="btn btn-ghost" onclick="openProjectChat(2)">交流监督</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="project-cover cover-3" aria-hidden="true"></div>
+          <div class="project">
+            <h3>低碳通勤挑战</h3>
+            <p class="muted">把短途改成步行/骑行；记录里程与估算减排，为减少碳排放贡献自己的一份力量。</p>
+            <div class="pill-row">
+              <span class="pill">通勤</span>
+              <span class="pill">健康</span>
+              <span class="pill">城市</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <a class="btn btn-ghost" href="co2.html">开始记录</a>
+              <button class="btn btn-ghost" onclick="shareProject(3)">分享项目</button>
+              <button class="btn btn-ghost" onclick="openProjectChat(3)">交流监督</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 项目记录板块 -->
+  <section class="section" style="background: #f8f9fa;">
+    <div class="container">
+      <div class="section-head">
+        <h2>项目记录与进展</h2>
+        <p class="muted">记录项目的每一步进展，跟踪任务完成情况</p>
+      </div>
+
+      <!-- 记录表单 -->
+      <div class="record-form" style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem; color: #2c7a7b;">添加项目记录</h3>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; align-items: end;">
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">选择项目</label>
+            <select id="projectSelect" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; color: #333;">
+              <option value="1" style="color: #333;">社区垃圾分类宣传</option>
+              <option value="2" style="color: #333;">旧物循环计划</option>
+              <option value="3" style="color: #333;">低碳通勤挑战</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">记录内容</label>
+            <textarea id="recordContent" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; resize: vertical; color: #333;"></textarea>
+          </div>
+          <div style="grid-column: span 2; text-align: right;">
+            <button onclick="addProjectRecord(document.getElementById('projectSelect').value, document.getElementById('recordContent').value)" class="btn btn-primary">添加记录</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录展示 -->
+      <div class="records-container">
+        <h3 style="margin-bottom: 1rem; color: #2c7a7b;">项目记录</h3>
+        <div class="records-list" style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="padding: 1rem; border-bottom: 1px solid #eee; background: #f8f9fa; font-weight: 500;">记录列表</div>
+          <div style="padding: 1rem;">
+            <div style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: 500;">社区垃圾分类宣传</span>
+                <span style="font-size: 0.8rem; color: #666;">2026-02-27</span>
+              </div>
+              <p style="color: #666;">完成了社区垃圾分类海报的设计和印刷，准备下周开始张贴。</p>
+            </div>
+            <div style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: 500;">旧物循环计划</span>
+                <span style="font-size: 0.8rem; color: #666;">2026-02-26</span>
+              </div>
+              <p style="color: #666;">建立了完整的“收/出”清单系统，已开始接收社区居民的闲置物品。</p>
+            </div>
+            <div style="padding: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: 500;">低碳通勤挑战</span>
+                <span style="font-size: 0.8rem; color: #666;">2026-02-25</span>
+              </div>
+              <p style="color: #666;">购买了新的自行车，开始实施低碳通勤计划。</p>
+            </div>
+            <div style="padding: 1rem; text-align: right; border-top: 1px solid #eee; background: #f8f9fa;">
+              <button onclick="refreshRecords()" class="btn btn-ghost">刷新记录</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 时间线区域 -->
+  <section class="section" style="background: #f8f9fa;">
+    <div class="container">
+      <div class="section-head">
+        <h2>行动时间线</h2>
+        <p class="muted">记录我们的环保行动历程，见证每一步的成长与改变</p>
+      </div>
+
+      <div style="position: relative; padding-left: 3rem; max-width: 800px; margin: 0 auto;">
+        <!-- 时间线 -->
+        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #2c7a7b;"></div>
+        
+        <!-- 时间线项目 -->
+        <div style="position: relative; margin-bottom: 3rem; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="position: absolute; left: -3rem; top: 2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #2c7a7b; border: 3px solid white; box-shadow: 0 0 0 2px #2c7a7b;"></div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; color: #333;">完成回收点地图草稿</div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">2026-02-20</div>
+            <div style="color: #666;">记录：回收点信息、营业时间、可回收品类，方便社区居民了解周边回收资源。</div>
+          </div>
+        </div>
+        
+        <div style="position: relative; margin-bottom: 3rem; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="position: absolute; left: -3rem; top: 2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #2c7a7b; border: 3px solid white; box-shadow: 0 0 0 2px #2c7a7b;"></div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; color: #333;">组织旧衣物捐赠</div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">2026-02-15</div>
+            <div style="color: #666;">协助打包、消毒、分类；完成交接记录，让闲置衣物找到新的归宿。</div>
+          </div>
+        </div>
+        
+        <div style="position: relative; margin-bottom: 3rem; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="position: absolute; left: -3rem; top: 2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #2c7a7b; border: 3px solid white; box-shadow: 0 0 0 2px #2c7a7b;"></div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; color: #333;">发布第一条“纸箱出售信息”</div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">2026-02-10</div>
+            <div style="color: #666;">从“记录”到“连接”，让循环更容易，促进资源的有效利用。</div>
+          </div>
+        </div>
+        
+        <div style="position: relative; padding: 1.5rem; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="position: absolute; left: -3rem; top: 2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #2c7a7b; border: 3px solid white; box-shadow: 0 0 0 2px #2c7a7b;"></div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; color: #333;">启动社区环保课堂</div>
+            <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">2026-02-05</div>
+            <div style="color: #666;">定期开展环保知识讲座，提高居民环保意识，培养可持续生活习惯。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目效果反馈和展示 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>项目效果反馈与展示</h2>
+        <p class="muted">查看项目的实际效果和用户反馈，了解环保行动的影响力</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <!-- 项目成果展示 -->
+        <div style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="padding: 1.5rem; border-bottom: 1px solid #eee; background: #f8f9fa;">
+            <h3 style="color: #2c7a7b; margin: 0;">项目成果</h3>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div style="margin-bottom: 1.5rem;">
+              <h4 style="margin-bottom: 0.5rem;">社区垃圾分类宣传</h4>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>制作了100张垃圾分类宣传海报</span>
+                </li>
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>覆盖了5个社区的垃圾分类指导</span>
+                </li>
+                <li style="padding: 0.5rem 0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>举办了3场社区垃圾分类培训</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 0.5rem;">旧物循环计划</h4>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>收集了500件闲置物品</span>
+                </li>
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>为20个家庭匹配了需要的物品</span>
+                </li>
+                <li style="padding: 0.5rem 0; display: flex; align-items: center;">
+                  <span style="color: #52c41a; margin-right: 0.5rem;">✓</span>
+                  <span>减少了约100kg的碳排放</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户反馈 -->
+        <div style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="padding: 1.5rem; border-bottom: 1px solid #eee; background: #f8f9fa;">
+            <h3 style="color: #2c7a7b; margin: 0;">用户反馈</h3>
+          </div>
+          <div style="padding: 1.5rem;">
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+              <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">李</div>
+                <div>
+                  <div style="font-weight: 500;">李女士</div>
+                  <div style="font-size: 0.8rem; color: #666;">社区居民</div>
+                </div>
+              </div>
+              <p style="color: #666; margin: 0;">"垃圾分类宣传活动非常有意义，现在我们全家都养成了垃圾分类的好习惯，感觉为环保贡献了自己的一份力量。"</p>
+            </div>
+            <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+              <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">王</div>
+                <div>
+                  <div style="font-weight: 500;">王先生</div>
+                  <div style="font-size: 0.8rem; color: #666;">志愿者</div>
+                </div>
+              </div>
+              <p style="color: #666; margin: 0;">"通过旧物循环计划，我把家里的闲置物品找到了新的主人，同时也从别人那里获得了我需要的东西，这种共享经济模式非常棒！"</p>
+            </div>
+            <div style="padding: 1rem; background: #f8f9fa; border-radius: 4px;">
+              <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: #2c7a7b; color: white; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem;">张</div>
+                <div>
+                  <div style="font-weight: 500;">张女士</div>
+                  <div style="font-size: 0.8rem; color: #666;">社区工作者</div>
+                </div>
+              </div>
+              <p style="color: #666; margin: 0;">"低碳通勤挑战活动让更多人意识到了绿色出行的重要性，现在我们社区的自行车使用率明显提高了。"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="brand" style="color: white; margin-bottom: 1rem;"><span class="brand-mark">GH</span><span class="brand-name">GreenHub</span></div>
+      <div class="footer-links">
+        <a href="../index.html">首页</a>
+        <a href="projects.html">行动/项目</a>
+        <a href="marketplace.html">废品买卖</a>
+        <a href="co2.html">CO₂/碳足迹</a>
+        <a href="login.html">登录</a>
+      </div>
+      <p>GreenHub · 行动/项目</p>
+      <p>© 2026 GreenHub. 保留所有权利。</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>
+  // 项目交流功能
+  function openProjectChat(projectId) {
+    // 跳转到交流页面
+    window.location.href = 'chat.html?project=' + projectId;
+  }
+  
+  // 添加项目记录功能
+  function addProjectRecord(projectId, content) {
+    if (!content.trim()) {
+      alert('请输入记录内容！');
+      return;
+    }
+    
+    // 获取项目名称
+    const projectSelect = document.getElementById('projectSelect');
+    const projectName = projectSelect.options[projectSelect.selectedIndex].text;
+    
+    // 模拟添加记录
+    console.log('添加项目记录:', projectId, projectName, content);
+    
+    // 更新记录列表
+    updateRecordsList(projectName, content);
+    
+    // 更新时间线
+    updateTimeline(projectName, content);
+    
+    // 更新效果展示
+    updateResultsDisplay(projectName);
+    
+    // 清空输入框
+    document.getElementById('recordContent').value = '';
+    
+    // 显示成功消息
+    alert('记录添加成功！');
+  }
+  
+  // 更新记录列表
+  function updateRecordsList(projectName, content) {
+    const recordsList = document.querySelector('.records-list > div');
+    const refreshButton = recordsList.querySelector('div:last-child');
+    
+    // 创建新记录元素
+    const newRecord = document.createElement('div');
+    newRecord.style.padding = '1rem';
+    newRecord.style.borderBottom = '1px solid #f0f0f0';
+    
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + (now.getMonth() + 1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0');
+    
+    newRecord.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 500;">${projectName}</span>
+        <span style="font-size: 0.8rem; color: #666;">${dateStr}</span>
+      </div>
+      <p style="color: #666;">${content}</p>
+    `;
+    
+    // 插入到刷新按钮之前
+    recordsList.insertBefore(newRecord, refreshButton);
+  }
+  
+  // 更新时间线
+  function updateTimeline(projectName, content) {
+    const timeline = document.querySelector('.section:nth-of-type(3) > div > div');
+    const lastItem = timeline.querySelector('div:last-child');
+    
+    // 创建新时间线项目
+    const newTimelineItem = document.createElement('div');
+    newTimelineItem.style.position = 'relative';
+    newTimelineItem.style.marginBottom = '3rem';
+    newTimelineItem.style.padding = '1.5rem';
+    newTimelineItem.style.background = 'white';
+    newTimelineItem.style.borderRadius = '8px';
+    newTimelineItem.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+    
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + (now.getMonth() + 1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0');
+    
+    newTimelineItem.innerHTML = `
+      <div style="position: absolute; left: -3rem; top: 2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #2c7a7b; border: 3px solid white; box-shadow: 0 0 0 2px #2c7a7b;"></div>
+      <div style="display: flex; flex-direction: column;">
+        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; color: #333;">${projectName} - 新记录</div>
+        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">${dateStr}</div>
+        <div style="color: #666;">${content}</div>
+      </div>
+    `;
+    
+    // 插入到最后一个项目之前
+    timeline.insertBefore(newTimelineItem, lastItem);
+  }
+  
+  // 更新效果展示
+  function updateResultsDisplay(projectName) {
+    // 这里可以根据项目名称更新对应的成果展示
+    console.log('更新效果展示:', projectName);
+    // 实际项目中可以根据项目名称和记录内容更新相应的成果数据
+  }
+  
+  // 刷新记录功能
+  function refreshRecords() {
+    // 模拟刷新，实际项目中可以从服务器获取最新数据
+    alert('记录已刷新！');
+    // 实际项目中可以调用API获取最新记录并更新界面
+  }
+</script>
+</body>
+</html>
